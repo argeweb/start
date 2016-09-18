@@ -1,0 +1,35 @@
+{
+  "name": "OrderPlus",
+  "short_name": "OrderPlus",
+  "icons": [
+    {
+      "src": "//static.orderplus.com.tw//icons/icon-128x128-0604.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "//static.orderplus.com.tw//icons/icon-144x144-0604.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "//static.orderplus.com.tw//icons/icon-152x152-0604.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "//static.orderplus.com.tw//touch/icon-192x192-0604.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "//static.orderplus.com.tw//touch/icon-256x256-0604.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "fullscreen",
+  "background_color": "#1C5D87",
+  "theme_color": "#1C5D87"
+}

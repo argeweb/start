@@ -1,0 +1,29 @@
+{
+  "name": "order-plus",
+  "authors": [
+    "cwen0708 <cwen0708@gmail.com>"
+  ],
+  "description": "orderplus",
+  "main": "",
+  "license": "MIT",
+  "homepage": "www.orderplus.com.tw",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "jquery": "^2.1.4",
+    "jquery-ui": "1.10.4",
+    "sweetalert2": "^4.1.9",
+    "tinymce": "^4.4.1",
+    "codemirror": "^5.18.2",
+    "moment": "^2.14.1",
+    "keymaster": "^1.6.3",
+    "push.js": "^0.0.11",
+    "bootstrap-table": "^1.11.0"
+  }
+}

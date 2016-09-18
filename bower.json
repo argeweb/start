@@ -1,0 +1,27 @@
+{
+  "name": "argeweb-start",
+  "authors": [
+    "cwen0708 <cwen0708@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "keywords": [
+    "google",
+    "app",
+    "engine",
+    "argeweb"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/argeweb/core",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "backend_ui_material": "argeweb/plugin-backend-ui-material",
+    "plugin_manager": "argeweb/plugin-plugin-manager"
+  }
+}
