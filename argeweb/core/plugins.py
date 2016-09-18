@@ -7,6 +7,7 @@ from google.appengine.api import memcache
 
 _plugins = []
 _plugins_controller = []
+_application_controller = []
 
 
 def exists(name):
@@ -16,10 +17,16 @@ def exists(name):
     return name in _plugins
 
 
-def register_controller(controller_name):
+def register_plugin_controller(controller_name):
     if controller_name in _plugins_controller:
         return
     _plugins_controller.append(controller_name)
+
+
+def register_application_controller(controller_name):
+    if controller_name in _application_controller:
+        return
+    _application_controller.append(controller_name)
 
 
 def register_template(plugin_name, templating=True):
@@ -43,7 +50,7 @@ def list():
     return _plugins
 
 
-def get_plugins_controller(plugin_name):
+def get_plugin_controller(plugin_name):
     directory = os.path.join('plugins', plugin_name, 'controllers')
     controllers = []
     for root_path, _, files in os.walk(directory):
@@ -57,15 +64,8 @@ def get_plugins_controller(plugin_name):
         return ["plugins."+plugin_name+".controllers."+plugin_name]
 
 
-def get_all_in_application():
-    plugins_list = []
-    try:
-        from application import application_action_helper
-        for item in application_action_helper:
-            plugins_list.append(item)
-    except:
-        pass
-    return plugins_list
+def get_all_controller_in_application():
+    return _application_controller
 
 
 def set_plugins_controller(controllers):
@@ -73,23 +73,16 @@ def set_plugins_controller(controllers):
     return _plugins_controller
 
 
-def get_all_installed():
+def get_all_controller_in_plugins():
+    if len(_plugins_controller) > 0:
+        return _plugins_controller
     plugins_controller = memcache.get('plugins.installed.all')
     if plugins_controller is not None and len(plugins_controller) > 0:
         return set_plugins_controller(plugins_controller)
-    if len(_plugins_controller) > 0:
-        memcache.set('plugins.installed.all', _plugins_controller)
-        return _plugins_controller
     plugins_controller = []
     dir_plugins = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'plugins'))
     for dirPath in os.listdir(dir_plugins):
         if dirPath.find(".") < 0:
-            plugins_controller += get_plugins_controller(dirPath)
-    try:
-        from application import application_action_helper
-        for item in application_action_helper:
-            plugins_controller.append("application."+item)
-    except:
-        pass
+            plugins_controller += get_plugin_controller(dirPath)
     memcache.set('plugins.installed.all', plugins_controller)
     return plugins_controller

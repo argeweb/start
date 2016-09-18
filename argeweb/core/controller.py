@@ -400,7 +400,7 @@ class Controller(webapp2.RequestHandler, Uri):
         This is the main point in which to listen for events or change dynamic configuration.
         """
         self.startup()
-        self.plugins += plugins_m.get_all_in_application()
+        self.plugins += plugins_m.get_all_controller_in_application()
         self.plugins_all = plugins_m.list()
         self.prohibited_controller = set(self.plugins_all) - set(self.plugins)
         if self.name in self.prohibited_controller:

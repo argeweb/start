@@ -39,7 +39,7 @@ def get_instance(application_path=None):
     _instance.error_handlers[404] = errors.handle_404
     _instance.error_handlers[500] = errors.handle_500
 
-    routing.auto_route(_instance.router, plugins.get_all_installed(), application_path, debug)
+    routing.auto_route(_instance.router, plugins.get_all_controller_in_plugins(), application_path, debug)
  
     if (appstats_settings.get('enabled', False) and debug) or appstats_settings.get('enabled_live', True):
         from google.appengine.ext.appstats import recording
