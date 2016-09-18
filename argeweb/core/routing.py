@@ -55,7 +55,7 @@ def auto_route(app_router, plugin_list, app_path=None, debug=True):
     route_all_controllers(app_router, plugin=None, path=app_path)
     for item in plugin_list:
         try:
-            route_all_controllers(app_router, item)
+            route_plugin_controllers(app_router, item)
         except ImportError, e:
             if debug:
                 logging.error("Plugin %s does not exist, or contains a bad import: %s" % (item, e))
@@ -82,17 +82,23 @@ def route_all_controllers(app_router, plugin=None, path=None):
         path = path.replace(base_directory, "")
         if path.startswith(os.path.sep):
             path = path[1:]
-    if path is not None and path is not '':
-        directory = os.path.join(path)
-    else:
-        directory = os.path.join('application', 'controllers')
-        if os.path.exists(directory) is False:
-            directory = os.path.join('application')
 
+    plugin_name = u""
+    plugin_controller = u""
     if plugin:
         directory = os.path.join('plugins', plugin, 'controllers')
         logging.info(plugin)
-        plugins.register_template(plugin)
+        plugin_name = plugin.split(".")[1]
+        plugin_controller = plugin.split(".")[2]
+        plugins.register_template(plugin_name)
+    else:
+        if path is not None and path is not '':
+            directory = os.path.join(path)
+        else:
+            directory = os.path.join('application', 'controllers')
+            if os.path.exists(directory) is False:
+                directory = os.path.join('application')
+
 
     directory = os.path.join(base_directory, directory)
     base_directory_path_len = len(base_directory.split(os.path.sep))
@@ -103,13 +109,15 @@ def route_all_controllers(app_router, plugin=None, path=None):
     # walk the app/controllers directory and sub-directories
     for root_path, _, files in os.walk(directory):
         for file in files:
-            partial_path = root_path.split(os.path.sep)[base_directory_path_len:]
             if file.endswith(".py") and file not in ['__init__.py', 'settings.py']:
                 try:
                     name = file.split('.')[0]
-                    module_path = '.'.join(partial_path)
                     if plugin:
-                        module_path = 'plugins.%s.controllers' % plugin
+                        module_path = 'plugins.%s.controllers' % plugin_name
+                    else:
+                        partial_path = root_path.split(os.path.sep)[base_directory_path_len:]
+                        module_path = '.'.join(partial_path)
+
                     module = __import__('%s.%s' % (module_path, name), fromlist=['*'])
                     plugins.register_controller(name)
                     try:
@@ -120,6 +128,28 @@ def route_all_controllers(app_router, plugin=None, path=None):
                 except AttributeError as e:
                     logging.error('Thought %s was a controller, but was wrong (or ran into some weird error): %s' % (file, e))
                     raise
+
+
+def route_plugin_controllers(app_router, plugin=None):
+    """
+    Called in app.routes to automatically route all controllers in the app/controllers
+    folder
+    """
+    plugin_name = ("%s" % plugin).split(".")[-1]
+    plugins.register_template(plugin_name)
+    try:
+        module = __import__('%s' % plugin, fromlist=['*'])
+        plugins.register_controller(plugin)
+        try:
+            cls = getattr(module, inflector.camelize(plugin_name))
+            route_controller(cls, app_router)
+        except AttributeError:
+            logging.debug("Controller %s not found, skipping" % inflector.camelize(plugin_name))
+    except ImportError as e:
+        logging.error('Thought %s was a controller, but was wrong (or ran into some weird error): %s' % (plugin_name, e))
+    except AttributeError as e:
+        logging.error('Thought %s was a controller, but was wrong (or ran into some weird error): %s' % (plugin_name, e))
+        raise
 
 
 def route_controller(controller_cls, app_router=None):

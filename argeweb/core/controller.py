@@ -401,12 +401,14 @@ class Controller(webapp2.RequestHandler, Uri):
         """
         self.startup()
         self.plugins += plugins_m.get_all_in_application()
-        self.plugins_all = plugins_m.get_all_installed()
+        self.plugins_all = plugins_m.list()
         self.prohibited_controller = set(self.plugins_all) - set(self.plugins)
+        if self.name in self.prohibited_controller:
+            self.logging.debug(u"%s in %s" % (self.name, self.prohibited_controller))
+            return self.abort(404)
         if self.prohibited_actions != []:
-            if self.name in self.prohibited_controller:
-                self.logging.debug(u"%s in %s" % (self.name, self.prohibited_actions))
-                return self.abort(404)
+            self.logging.debug(u"%s in %s" % (self.name, self.prohibited_actions))
+            return self.abort(404)
 
     def startup(self):
         from application.plus_info import PlusInfo

@@ -1,5 +1,5 @@
 {
-  "name": "argeweb-start",
+  "name": "argeweb-plugins",
   "authors": [
     "cwen0708 <cwen0708@gmail.com>"
   ],
@@ -12,7 +12,7 @@
     "argeweb"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/argeweb/core",
+  "homepage": "https://github.com/argeweb/start",
   "ignore": [
     "**/.*",
     "node_modules",

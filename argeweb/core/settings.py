@@ -252,7 +252,7 @@ def get_host_item(server_name):
         host_item = HostInformation.get_or_insert(
             host=server_name,
             theme="install",
-            plugins="application_user,backend_ui_material,scaffold,themes,web_file,web_page,web_setting,plugins"
+            plugins="application_user,application_user_role,backend_ui_material,scaffold,themes,web_file,web_page,web_setting,plugin_manager"
         )
     return update_memcache(server_name, host_item)
 

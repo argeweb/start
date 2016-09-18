@@ -8,6 +8,7 @@ from google.appengine.api import memcache
 _plugins = []
 _plugins_controller = []
 
+
 def exists(name):
     """
     Checks to see if a particular plugin is enabled
@@ -44,18 +45,16 @@ def list():
 
 def get_plugins_controller(plugin_name):
     directory = os.path.join('plugins', plugin_name, 'controllers')
-
     controllers = []
     for root_path, _, files in os.walk(directory):
         for file in files:
             if file.endswith(".py") and file not in ['__init__.py', 'settings.py']:
-                controllers.append(file.replace(".py", ""))
+                controllers.append("plugins."+plugin_name+".controllers."+file.replace(".py", ""))
 
-    logging.info(controllers)
     if len(controllers) > 0:
         return controllers
     else:
-        return [plugin_name]
+        return ["plugins."+plugin_name+".controllers."+plugin_name]
 
 
 def get_all_in_application():
@@ -89,7 +88,7 @@ def get_all_installed():
     try:
         from application import application_action_helper
         for item in application_action_helper:
-            plugins_controller.append(item)
+            plugins_controller.append("application."+item)
     except:
         pass
     memcache.set('plugins.installed.all', plugins_controller)
