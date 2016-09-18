@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from webapp2 import Response
-from protopigeon import Message
+import json
 
 
 _handlers = {}
@@ -73,11 +73,13 @@ class IntResponseHandler(ResponseHandler):
         handler.abort(result)
 
 
-class MessageHandler(ResponseHandler):
-    type = Message
+class DictResponseHandler(ResponseHandler):
+    type = dict
 
     def process(self, handler, result):
         handler._clear_redirect()
-        handler.meta.change_view('message')
-        handler.context['data'] = result
-        return handler.meta.view.render()
+        handler.response.charset = 'utf-8'
+        handler.response.unicode_body = unicode(json.dumps(result, encoding='utf-8', ensure_ascii=False))
+        if not handler.response.content_type:
+            handler.response.content_type = result.content_type if hasattr(result, 'content_type') else 'text/json'
+        return handler.response

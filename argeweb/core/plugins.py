@@ -54,10 +54,10 @@ def get_plugin_controller(plugin_name):
     directory = os.path.join('plugins', plugin_name, 'controllers')
     controllers = []
     for root_path, _, files in os.walk(directory):
-        for file in files:
-            if file.endswith(".py") and file not in ['__init__.py', 'settings.py']:
-                controllers.append("plugins."+plugin_name+".controllers."+file.replace(".py", ""))
-
+        for file_name in files:
+            if file_name.endswith(".py") and file_name not in ['__init__.py', 'settings.py']:
+                controllers.append("plugins."+plugin_name+".controllers."+file_name.replace(".py", ""))
+    register_plugin_controller(plugin_name)
     if len(controllers) > 0:
         return controllers
     else:
@@ -65,24 +65,49 @@ def get_plugin_controller(plugin_name):
 
 
 def get_all_controller_in_application():
-    return _application_controller
+    # if len(_application_controller) > 0:
+    #     return _application_controller
+    # application_controller = memcache.get('application.all.controller')
+    # if application_controller is not None and len(application_controller) > 0:
+    #     return application_controller
+    application_controller = []
 
+    base_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+    has_controllers_dir = True
+    directory = os.path.join('application', 'controllers')
+    if os.path.exists(directory) is False:
+        has_controllers_dir = False
+        directory = os.path.join('application')
 
-def set_plugins_controller(controllers):
-    _plugins_controller = controllers
-    return _plugins_controller
+    directory = os.path.join(base_directory, directory)
+    # base_directory_path_len = len(base_directory.split(os.path.sep))
+
+    if not os.path.exists(directory):
+        return
+
+    # walk the app/controllers directory and sub-directories
+    for root_path, _, files in os.walk(directory):
+        for file_name in files:
+            if file_name.endswith(".py") == False or file_name in ['__init__.py', 'settings.py']:
+                continue
+            controller_name = file_name.split('.')[0]
+            register_application_controller(controller_name)
+            if has_controllers_dir:
+                application_controller.append("application.controllers.%s" % controller_name)
+    memcache.set('application.all.controller', application_controller)
+    return application_controller
 
 
 def get_all_controller_in_plugins():
     if len(_plugins_controller) > 0:
         return _plugins_controller
-    plugins_controller = memcache.get('plugins.installed.all')
+    plugins_controller = memcache.get('plugins.all.controller')
     if plugins_controller is not None and len(plugins_controller) > 0:
-        return set_plugins_controller(plugins_controller)
+        return plugins_controller
     plugins_controller = []
     dir_plugins = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'plugins'))
     for dirPath in os.listdir(dir_plugins):
         if dirPath.find(".") < 0:
             plugins_controller += get_plugin_controller(dirPath)
-    memcache.set('plugins.installed.all', plugins_controller)
+    memcache.set('plugins.all.controller', plugins_controller)
     return plugins_controller

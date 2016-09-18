@@ -488,7 +488,8 @@ class Controller(webapp2.RequestHandler, Uri):
         self.events.after_dispatch(response=result, controller=self)
 
         # Return value handlers.
-        # Response has highest precendence, the view class has lowest.
+        # Response has highest precendence, the view class has lowest
+        logging.info(type(result))
         response_handler = response_handlers.factory(type(result))
 
         if response_handler:
