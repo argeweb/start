@@ -423,3 +423,21 @@ def sort_down(controller, key):
     controller.meta.change_view("json")
     controller.response.headers["Command-Redirect"] = redirect_path
     controller.context["data"] = {"info": "success"}
+
+
+def set_boolean_field(controller, key):
+    controller.meta.change_view("json")
+    item = controller.util.decode_key(key).get()
+    field_name = controller.params.get_string("field")
+    field_value = controller.params.get_boolean("value")
+    controller.context["data"] = {"info": "failure"}
+    if not item:
+        return
+
+    if hasattr(item, field_name):
+        try:
+            setattr(item, field_name, field_value)
+        except:
+            return
+        item.put()
+        controller.context["data"] = {"info": "success"}

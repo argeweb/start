@@ -86,11 +86,17 @@ def get_route_menu(list_name=u"", controller=None):
             icon = menu["icon"]
         else:
             icon = "list"
-
+        if (u"%s" % menu["text"]).startswith(u"gt:"):
+            text = u"gt"
+            group_title = (u"%s" % menu["text"]).replace(u"gt:", "")
+        else:
+            text = menu["text"]
+            group_title = u""
         insert_item = {
             "uri": uri,
             "url": url,
-            "text": menu["text"],
+            "text": text,
+            "group_title": group_title,
             "icon": icon,
             "sort": sort,
             "level": 1
@@ -240,8 +246,6 @@ class Controller(webapp2.RequestHandler, Uri):
         #: You should **always** have ``auth.require_admin_for_prefix(prefix=('admin',))`` in your
         #: authorization chain.
         authorizations = (auth.require_admin_for_prefix(prefix=('admin',)),)
-        # authorizations = (auth.require_admin_for_prefix(prefix=('admin',)),
-        #                          app_auth.require_orderplus_user_for_prefix(prefix=('dashboard',)))
         #: Which :class:`~argeweb.core.views.View` class to use by default. use :meth:`change_view` to switch views.
         View = views.TemplateView
 
@@ -489,7 +493,6 @@ class Controller(webapp2.RequestHandler, Uri):
 
         # Return value handlers.
         # Response has highest precendence, the view class has lowest
-        logging.info(type(result))
         response_handler = response_handlers.factory(type(result))
 
         if response_handler:
@@ -599,3 +602,4 @@ class Controller(webapp2.RequestHandler, Uri):
     admin_delete = scaffold.delete
     admin_sort_up = scaffold.sort_up
     admin_sort_down = scaffold.sort_down
+    admin_set_boolean_field = scaffold.set_boolean_field

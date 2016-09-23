@@ -296,7 +296,10 @@ def build_scaffold_routes_for_controller(controllercls, prefix_name=None):
 
     if hasattr(controllercls, prefix_string + 'sort_down'):
         id.append(Route('/sort_down', controllercls, 'sort_down', handler_method=prefix_string + 'sort_down'))
-        
+
+    if hasattr(controllercls, prefix_string + 'set_boolean_field'):
+        id.append(Route('/set_boolean_field', controllercls, 'set_boolean_field', handler_method=prefix_string + 'set_boolean_field'))
+
     top_route = routes.NamePrefixRoute(name + ':', top + [
         routes.PathPrefixRoute('/' + name, path + [
             routes.PathPrefixRoute('/:<key>', id)
