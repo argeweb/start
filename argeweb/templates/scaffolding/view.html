@@ -1,0 +1,5 @@
+{%- if route.prefix == "admin" -%}
+    {%- extends "backend/view.html" -%}
+{%- else -%}
+    {%- extends "default/view.html" -%}
+{%- endif -%}
