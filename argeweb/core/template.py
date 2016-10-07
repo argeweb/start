@@ -25,7 +25,6 @@ debug = os.environ.get('SERVER_SOFTWARE', '').startswith('Dev')
 
 
 class TemplateEngine(object):
-
     def __init__(self, theme=None, extra_globals=None, extra_paths=None):
         self.theme = theme
         jinja2_env_kwargs = {

@@ -3,7 +3,9 @@
 
 import logging
 import json
+import os
 from template import render_template
+debug = os.environ.get('SERVER_SOFTWARE', '').startswith('Dev')
 
 
 def generic_handler(code, template=None):

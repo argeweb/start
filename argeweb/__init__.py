@@ -14,6 +14,7 @@ from argeweb.core import auth
 from argeweb.core import events
 from argeweb.core import property as Fields
 from argeweb.core import datastore
+from argeweb.core import function
 from argeweb.core.ndb import Model, BasicModel, ndb
 from argeweb.components.pagination import Pagination
 from argeweb.components.search import Search
@@ -45,5 +46,6 @@ __all__ = (
     'ndb',
     'route_menu',
     'auth',
-    'datastore'
+    'datastore',
+    'function'
 )

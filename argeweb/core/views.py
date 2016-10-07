@@ -92,7 +92,8 @@ class TemplateView(View):
             'params': self.controller.params,
             'print_key': self.controller.util.encode_key,
             'print_setting': self.controller.settings.print_setting,
-            'datastore': self.controller.datastore
+            'datastore': self.controller.datastore,
+            'function': self.controller.function
         })
         r = self.controller.route
         self.controller.events.setup_template_variables(controller=self.controller)

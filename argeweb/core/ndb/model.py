@@ -218,6 +218,7 @@ class BasicModel(Model):
         """
         if self.sort is None or self.sort == 0.0:
             self.sort = time.time()
+        super(BasicModel, self).before_put()
 
     @classmethod
     def all(cls):
@@ -250,3 +251,11 @@ class BasicModel(Model):
     def get_next_one_with_category(cls, item, cat):
         c = ndb.Key(urlsafe=cat)
         return cls.query(cls.category == c, cls.sort < item.sort).order(-cls.sort).get()
+
+    @classmethod
+    def has_record(cls):
+        r = cls.query().get()
+        if r is not None:
+            return True
+        else:
+            return False

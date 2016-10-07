@@ -20,6 +20,7 @@ from argeweb.core import scaffold, auth
 from argeweb.core import settings
 from argeweb.core import time_util
 from argeweb.core.datastore import DataStore
+from argeweb.core.function import Function
 from argeweb.core.bunch import Bunch
 from argeweb.core.params import ParamInfo
 from argeweb.core.ndb import encode_key, decode_key
@@ -314,6 +315,7 @@ class Controller(webapp2.RequestHandler, Uri):
         self.settings = settings
         self.logging = logging
         self.datastore = DataStore(self)
+        self.function = Function(self).get_run()
         self.server_name = os.environ["SERVER_NAME"]
         self.host_info = self.settings.get_host_item(self.server_name)
         self.namespace = self.host_info.namespace
@@ -415,8 +417,7 @@ class Controller(webapp2.RequestHandler, Uri):
             return self.abort(404)
 
     def startup(self):
-        from application.plus_info import PlusInfo
-        self.plus = PlusInfo(weakref.proxy(self))
+        pass
 
     def _is_authorized(self):
         authorizations = self.meta.authorizations

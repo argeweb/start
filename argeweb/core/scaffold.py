@@ -43,6 +43,15 @@ class Scaffolding(object):
         if not hasattr(self.controller, 'Scaffold'):
             setattr(self.controller, 'Scaffold', Scaffold)
 
+        if hasattr(self.controller.Scaffold, "helper"):
+            plugins_helper = self.controller.Scaffold.helper
+            try:
+                titles = plugins_helper["controllers"][str(self.controller.name).split(".")[-1]]["actions"]
+                setattr(self.controller.Scaffold, "title", titles)
+            except:
+                setattr(self.controller.Scaffold, "title", u"Unknown")
+
+
         if not issubclass(self.controller.Scaffold, Scaffold):
             self.controller.Scaffold = type('Scaffold', (self.controller.Scaffold, Scaffold), {})
 
@@ -244,21 +253,19 @@ def _flash(controller, *args, **kwargs):
 
 
 # controller Methods
-
 def list(controller):
+    plural = None
     if 'query' in controller.request.params:
         try:
-            controller.context.set(**{
-                controller.scaffold.plural: controller.components.search()
-            })
+            plural = controller.components.search()
         except:
-            controller.context.set(**{
-                controller.scaffold.plural: controller.scaffold.query_factory(controller)
-            })
+            plural = controller.scaffold.query_factory(controller)
     else:
-        controller.context.set(**{
-            controller.scaffold.plural: controller.scaffold.query_factory(controller)
-        })
+        try:
+            plural = controller.scaffold.query_factory(controller)
+        except:
+            pass
+    controller.context.set(**{controller.scaffold.plural: plural})
     if controller.scaffold.plural in controller.context:
         try:
             last_record = None
@@ -313,7 +320,6 @@ def parser_action(controller, item, callback=save_callback):
             controller.context.set(**{
                 controller.scaffold.singular: item,
             })
-
             _flash(controller, u'項目已儲存', 'success')
 
             if controller.scaffold.redirect:

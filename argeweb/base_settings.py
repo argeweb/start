@@ -15,7 +15,7 @@ settings['application']['message_timeout'] = 28800
 
 # 驗証失敗時，重新導向路徑
 settings["authorization_redirect"] = []
-settings["authorization_redirect"].append({"authorization": 'require_orderplus_user', "redirect": '/'})
+settings["authorization_redirect"].append({"authorization": 'require_member', "redirect": '/'})
 settings["authorization_redirect"].append({"authorization": 'require_admin', "redirect": '/admin/login'})
 settings["authorization_redirect"].append({"authorization": 'require_user', "redirect": '/login.html'})
 
