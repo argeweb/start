@@ -11,17 +11,17 @@
 <div class="wrap">
   <div class="404">
     <pre><code>
-    <span class="comment">// 404 page not found.</span>
-    (<span class="blue">function</span>( window, page, undefined ) {
+    <span class="comment">// 500 server error.</span>
+    (<span class="blue">function</span>( window, error ) {
         <span class="blue">function</span> launch() {
-           <span class="blue">if</span>( page == undefined ) {
+           <span class="blue">if</span>( error ) {
                <span class="blue">throw</span> (<span class="load">"(╯°□°)╯︵ ┻━┻"</span>);
            }<span class="blue">else</span>{
                <span class="blue">return</span>;
             }
         }
         window.addEventListener(<span class="load">'load'</span>, launch);
-    })( window );
+    })( window, <span class="blue">true</span> );
     </code></pre>
   </div>
 </div>
