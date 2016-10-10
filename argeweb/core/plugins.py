@@ -3,18 +3,24 @@
 import logging
 import argeweb
 import os
+from settings import HostInformationModel, update_memcache
+from google.appengine.api import namespace_manager
 from google.appengine.api import memcache
 
-_plugins = []
+_plugin_enable_list = []
 _plugins_controller = []
 _application_controller = []
+
+
+def get_enable_list():
+    return _plugin_enable_list
 
 
 def exists(name):
     """
     Checks to see if a particular plugin is enabled
     """
-    return name in _plugins
+    return name in _plugin_enable_list
 
 
 def register_plugin_controller(controller_name):
@@ -33,10 +39,10 @@ def register_template(plugin_name, templating=True):
     """
     Adds a plugin's template path to the templating engine
     """
-    if plugin_name in _plugins:
+    if plugin_name in _plugin_enable_list:
         return
     import template
-    _plugins.append(plugin_name)
+    _plugin_enable_list.append(plugin_name)
 
     if templating:
         path = os.path.normpath(os.path.join(
@@ -44,10 +50,6 @@ def register_template(plugin_name, templating=True):
             '../plugins/%s/templates' % plugin_name))
         template.add_template_path(path)
         template.add_template_path(path, prefix=plugin_name)
-
-
-def list():
-    return _plugins
 
 
 def get_plugin_controller(plugin_name):
@@ -62,6 +64,14 @@ def get_plugin_controller(plugin_name):
         return controllers
     else:
         return ["plugins."+plugin_name+".controllers."+plugin_name]
+
+
+def get_prohibited_controller():
+    return set(get_all_controller()) - set(get_enable_list())
+
+
+def get_all_controller():
+    return get_all_controller_in_application() + get_all_controller_in_plugins()
 
 
 def get_all_controller_in_application():
@@ -94,7 +104,6 @@ def get_all_controller_in_application():
             register_application_controller(controller_name)
             if has_controllers_dir:
                 application_controller.append("application.controllers.%s" % controller_name)
-    memcache.set('application.all.controller', application_controller)
     return application_controller
 
 
@@ -109,5 +118,21 @@ def get_all_controller_in_plugins():
     for dirPath in os.listdir(dir_plugins):
         if dirPath.find(".") < 0:
             plugins_controller += get_plugin_controller(dirPath)
-    memcache.set('plugins.all.controller', plugins_controller)
+    memcache.set('plugins.all.controller', plugins_controller, 60)
     return plugins_controller
+
+
+def get_enable_plugins_from_db(server_name, namespace):
+    namespace_manager.set_namespace("shared")
+    host_item = HostInformationModel.get_by_host(server_name)
+    namespace_manager.set_namespace(namespace)
+    return str(host_item.plugins).split(",")
+
+
+def set_enable_plugins_to_db(server_name, namespace, plugins):
+    namespace_manager.set_namespace("shared")
+    host_item = HostInformationModel.get_by_host(server_name)
+    host_item.plugins = ",".join(plugins)
+    host_item.put()
+    update_memcache(server_name, host_item)
+    namespace_manager.set_namespace(namespace)

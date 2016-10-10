@@ -5,7 +5,6 @@
 # Author: Qi-Liang Wen (温啓良）
 # Web: http://www.yooliang.com/
 # Date: 2014/9/30
-from webapp2 import get_request
 import os
 import logging
 import inspect
@@ -18,17 +17,21 @@ from google.appengine.api import memcache
 _defaults = {}
 
 
-class HostInformation(BasicModel):
+class HostInformationModel(BasicModel):
     class Meta:
         label_name = {
             "host": u"域名",
             "namespace": u"命名空間",
+            "site_name": u"",
+            "plugins": u"命名空間",
+            "is_lock": u"命名空間",
         }
     host = Fields.StringProperty(required=True)
     namespace = Fields.StringProperty(required=True)
     site_name = Fields.StringProperty()
     plugins = Fields.StringProperty()
     theme = Fields.StringProperty()
+    is_lock = Fields.BooleanProperty(default=True)
 
     def plugins_list(self):
         return str(self.plugins).split(",")
@@ -42,7 +45,7 @@ class HostInformation(BasicModel):
         return cls.query(cls.namespace == namespace).get()
 
     @classmethod
-    def get_or_insert(cls, host, theme=None, plugins=None):
+    def get_or_insert(cls, host, theme=None, plugins=None, is_lock=True):
         item = cls.query(cls.host == host).get()
         if item is None:
             import random, string
@@ -52,6 +55,7 @@ class HostInformation(BasicModel):
             item.namespace = u"%s-%s-%s-%s" % (r[0:4], r[5:9], r[10:14], r[15:19])
             item.theme = theme if theme is not None else u""
             item.plugins = plugins if plugins is not None else u""
+            item.is_lock = is_lock
             item.put()
         return item
 
@@ -146,6 +150,7 @@ def settings():
 def print_setting(key):
     return get_from_datastore(key, "")
 
+
 def get(key, default=None):
     """
     Returns the setting at key, if available, raises an ConfigurationError if default is none, otherwise
@@ -205,23 +210,23 @@ def get_info(key, memcache_key, host=None, host_item=None, timeout=100):
     else:
         return_string = memcache.get(memcache_key)
         if return_string is None and host_item is None:
-            host_item = HostInformation.get_by_host(host)
+            host_item = HostInformationModel.get_by_host(host)
             if host_item is not None:
                 return_string = getattr(host_item, key)
                 memcache.set(key=memcache_key, value=return_string, time=timeout)
     return return_string, host_item
 
 
-def get_plugins(server_name, namespace):
-    namespace_manager.set_namespace("shared.host")
-    host_item = HostInformation.get_by_host(server_name)
+def get_enable_plugins_from_db(server_name, namespace):
+    namespace_manager.set_namespace("shared")
+    host_item = HostInformationModel.get_by_host(server_name)
     namespace_manager.set_namespace(namespace)
     return str(host_item.plugins).split(",")
 
 
-def set_plugins(server_name, namespace, plugins):
-    namespace_manager.set_namespace("shared.host")
-    host_item = HostInformation.get_by_host(server_name)
+def set_enable_plugins_to_db(server_name, namespace, plugins):
+    namespace_manager.set_namespace("shared")
+    host_item = HostInformationModel.get_by_host(server_name)
     host_item.plugins = ",".join(plugins)
     host_item.put()
     update_memcache(server_name, host_item)
@@ -229,15 +234,16 @@ def set_plugins(server_name, namespace, plugins):
 
 
 def get_theme(server_name, namespace):
-    namespace_manager.set_namespace("shared.host")
-    host_item = HostInformation.get_by_host(server_name)
+    namespace_manager.set_namespace("shared")
+    host_item = HostInformationModel.get_by_host(server_name)
     namespace_manager.set_namespace(namespace)
     return host_item.theme
 
 
 def set_theme(server_name, namespace, theme):
-    namespace_manager.set_namespace("shared.host")
-    host_item = HostInformation.get_by_host(server_name)
+    namespace_manager.set_namespace("shared")
+    host_item = HostInformationModel.get_by_host(server_name)
+
     host_item.theme = theme
     host_item.put()
     update_memcache(server_name, host_item)
@@ -245,23 +251,26 @@ def set_theme(server_name, namespace, theme):
 
 
 def get_host_item(server_name):
-    namespace_manager.set_namespace("shared.host")
-    memcache_key = "shared.host.info." + server_name
+    namespace_manager.set_namespace("shared")
+    memcache_key = "shared.info." + server_name
     host_item = memcache.get(memcache_key)
     if host_item is None:
-        host_item = HostInformation.get_or_insert(
+        host_item = HostInformationModel.get_or_insert(
             host=server_name,
             theme="install",
-            plugins="application_user,application_user_role,backend_ui_material,scaffold,themes,web_file,web_page,web_setting,plugin_manager"
+            plugins="application_user,application_user_role,backend_ui_material,scaffold,themes,web_file,web_page,web_setting,plugin_manager",
+            is_lock=True
         )
+    host_item.plugin_enable_list = str(host_item.plugins).split(",")
+    host_item.application_controller_list = []
     return update_memcache(server_name, host_item)
 
 
 def update_memcache(server_name, host_item=None):
-    namespace_manager.set_namespace("shared.host")
-    memcache_key = "shared.host.info." + server_name
+    namespace_manager.set_namespace("shared")
+    memcache_key = "shared.info." + server_name
     if host_item is None:
-        host_item = HostInformation.get_or_insert(host=server_name)
+        host_item = HostInformationModel.get_or_insert(host=server_name)
     memcache.set(key=memcache_key, value=host_item, time=3600)
     namespace_manager.set_namespace(host_item.namespace)
     return host_item

@@ -52,8 +52,7 @@ def auto_route(app_router, app_path=None, debug=True):
     """
     Automatically routes all controllers in main app and plugins
     """
-    all_c = plugins.get_all_controller_in_application() + plugins.get_all_controller_in_plugins()
-    for item in all_c:
+    for item in plugins.get_all_controller():
         try:
             route_controllers(app_router, item)
         except ImportError, e:
@@ -71,23 +70,21 @@ def redirect(url, to, app_router=None):
     add(routes.RedirectRoute(url, redirect_to=to), app_router)
 
 
-def route_controllers(app_router, plugin=None):
+def route_controllers(app_router, controller_path=None):
     """
     Called in app.routes to automatically route all controllers in the app/controllers
     folder
     """
-    sp = ("%s" % plugin).split(".")
+    sp = ("%s" % controller_path).split(".")
     type_name = sp[0]
     controller_name = sp[-1]
-    if type_name == "application":
-        plugins.register_template("application."+controller_name)
-    else:
-        plugins.register_template(controller_name)
     try:
-        module = __import__('%s' % plugin, fromlist=['*'])
+        module = __import__('%s' % controller_path, fromlist=['*'])
         try:
             cls = getattr(module, inflector.camelize(controller_name))
             route_controller(cls, app_router)
+            if type_name == "plugins":
+                plugins.register_template(controller_name)
         except AttributeError:
             logging.debug("Controller %s not found, skipping" % inflector.camelize(controller_name))
     except ImportError as e:

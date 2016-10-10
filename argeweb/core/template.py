@@ -133,7 +133,7 @@ class TemplateEngine(object):
                 'users': users,
                 'settings': settings(),
                 'has_plugin': plugins.exists,
-                'plugins': plugins.list,
+                'plugins': plugins.get_enable_list,
                 'version': argeweb.version,
                 'app_version': os.environ['CURRENT_VERSION_ID'],
                 'hostname': app_identity.get_default_version_hostname(),

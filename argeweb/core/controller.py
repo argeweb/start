@@ -6,7 +6,7 @@ import webapp2
 import logging
 import time
 import base64
-from argeweb.core import plugins as plugins_m
+from argeweb.core import plugins
 from google.appengine.api import users
 from google.appengine.api import namespace_manager
 from webapp2 import cached_property
@@ -319,8 +319,7 @@ class Controller(webapp2.RequestHandler, Uri):
         self.server_name = os.environ["SERVER_NAME"]
         self.host_info = self.settings.get_host_item(self.server_name)
         self.namespace = self.host_info.namespace
-        self.plugins = str(self.host_info.plugins).split(",")
-        self.plugins_all = []
+        self.plugins = plugins
         self.theme = self.host_info.theme
         namespace_manager.set_namespace(self.namespace)
 
@@ -406,15 +405,17 @@ class Controller(webapp2.RequestHandler, Uri):
         This is the main point in which to listen for events or change dynamic configuration.
         """
         self.startup()
-        self.plugins += plugins_m.get_all_controller_in_application()
-        self.plugins_all = plugins_m.list()
-        self.prohibited_controller = set(self.plugins_all) - set(self.plugins)
+        self.prohibited_controller = plugins.get_prohibited_controller()
         if self.name in self.prohibited_controller:
-            self.logging.debug(u"%s in %s" % (self.name, self.prohibited_controller))
+            # 組件被停用
+            self.logging.debug(u"%s is disable" % self.name)
             return self.abort(404)
         if self.prohibited_actions != []:
+            # 權限不足
             self.logging.debug(u"%s in %s" % (self.name, self.prohibited_actions))
             return self.abort(404)
+        if self.name in self.plugins.get_enable_list():
+            self.logging.info("here")
 
     def startup(self):
         pass
