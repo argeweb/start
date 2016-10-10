@@ -47,8 +47,11 @@ def require_admin(controller):
     controller.prohibited_actions = str(role.prohibited_actions).split(",")
     controller.context["application_user_level"] = controller.application_user_level
     controller.context["application_user_key"] = admin_user.key
-    if controller.route.name in controller.prohibited_actions:
+    name = ".".join(str(controller).split(" object")[0][1:].split(".")[0:-1]) + "." + controller.route.action
+    if name in controller.prohibited_actions:
         return controller.abort(403)
+    # if controller.route.name in controller.prohibited_actions:
+    #     return controller.abort(403)
     return True
 
 

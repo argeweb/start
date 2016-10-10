@@ -9,81 +9,11 @@ import os
 import logging
 import inspect
 from . import events
-from argeweb.core.ndb import Model, BasicModel, ndb
-from argeweb.core import property as Fields
+from .model import HostInformationModel, WebSettingModel
 from google.appengine.api import namespace_manager
 from google.appengine.api import memcache
 
 _defaults = {}
-
-
-class HostInformationModel(BasicModel):
-    class Meta:
-        label_name = {
-            "host": u"域名",
-            "namespace": u"命名空間",
-            "site_name": u"",
-            "plugins": u"命名空間",
-            "is_lock": u"命名空間",
-        }
-    host = Fields.StringProperty(required=True)
-    namespace = Fields.StringProperty(required=True)
-    site_name = Fields.StringProperty()
-    plugins = Fields.StringProperty()
-    theme = Fields.StringProperty()
-    is_lock = Fields.BooleanProperty(default=True)
-
-    def plugins_list(self):
-        return str(self.plugins).split(",")
-
-    @classmethod
-    def get_by_host(cls, host):
-        return cls.query(cls.host == host).get()
-
-    @classmethod
-    def get_by_namespace(cls, namespace):
-        return cls.query(cls.namespace == namespace).get()
-
-    @classmethod
-    def get_or_insert(cls, host, theme=None, plugins=None, is_lock=True):
-        item = cls.query(cls.host == host).get()
-        if item is None:
-            import random, string
-            item = cls()
-            item.host = host
-            r = ''.join(random.choice(string.lowercase) for i in range(25))
-            item.namespace = u"%s-%s-%s-%s" % (r[0:4], r[5:9], r[10:14], r[15:19])
-            item.theme = theme if theme is not None else u""
-            item.plugins = plugins if plugins is not None else u""
-            item.is_lock = is_lock
-            item.put()
-        return item
-
-
-class WebSettingModel(BasicModel):
-    class Meta:
-        label_name = {
-            "setting_name": u"名稱",
-            "setting_key": u"鍵",
-            "setting_value": u"值",
-        }
-    setting_name = Fields.StringProperty()
-    setting_key = Fields.StringProperty(required=True)
-    setting_value = Fields.StringProperty(required=True)
-
-    @classmethod
-    def get_by_key(cls, key):
-        return cls.query(cls.setting_key == key).get()
-
-    @classmethod
-    def get_or_insert(cls, key, default):
-        item = cls.query(cls.setting_key == key).get()
-        if item is None:
-            item = cls()
-            item.setting_key = key
-            item.setting_value = default
-            item.put()
-        return item
 
 
 class ConfigurationError(Exception):
@@ -215,22 +145,6 @@ def get_info(key, memcache_key, host=None, host_item=None, timeout=100):
                 return_string = getattr(host_item, key)
                 memcache.set(key=memcache_key, value=return_string, time=timeout)
     return return_string, host_item
-
-
-def get_enable_plugins_from_db(server_name, namespace):
-    namespace_manager.set_namespace("shared")
-    host_item = HostInformationModel.get_by_host(server_name)
-    namespace_manager.set_namespace(namespace)
-    return str(host_item.plugins).split(",")
-
-
-def set_enable_plugins_to_db(server_name, namespace, plugins):
-    namespace_manager.set_namespace("shared")
-    host_item = HostInformationModel.get_by_host(server_name)
-    host_item.plugins = ",".join(plugins)
-    host_item.put()
-    update_memcache(server_name, host_item)
-    namespace_manager.set_namespace(namespace)
 
 
 def get_theme(server_name, namespace):

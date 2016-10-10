@@ -9,6 +9,7 @@
 
 _commands = {}
 
+
 def register(name, common_object=None):
     name = name + ":" + common_object.__name__
     if name in _commands:
@@ -16,7 +17,7 @@ def register(name, common_object=None):
     _commands[name] = common_object
 
 
-class DataStore(object):
+class Datastore(object):
     _controller = None
 
     def __init__(self, controller):

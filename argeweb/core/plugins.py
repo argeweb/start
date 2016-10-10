@@ -3,24 +3,26 @@
 import logging
 import argeweb
 import os
-from settings import HostInformationModel, update_memcache
+from model import HostInformationModel
+from caching import cache
+from settings import update_memcache
 from google.appengine.api import namespace_manager
 from google.appengine.api import memcache
 
-_plugin_enable_list = []
+_plugin_installed_list = []
 _plugins_controller = []
 _application_controller = []
 
 
-def get_enable_list():
-    return _plugin_enable_list
+def get_installed_list():
+    return _plugin_installed_list
 
 
 def exists(name):
     """
     Checks to see if a particular plugin is enabled
     """
-    return name in _plugin_enable_list
+    return name in _plugin_installed_list
 
 
 def register_plugin_controller(controller_name):
@@ -37,12 +39,12 @@ def register_application_controller(controller_name):
 
 def register_template(plugin_name, templating=True):
     """
-    Adds a plugin's template path to the templating engine
-    """
-    if plugin_name in _plugin_enable_list:
+        將 plugin 的樣版目錄加至樣版列表
+        """
+    if plugin_name in _plugin_installed_list:
         return
     import template
-    _plugin_enable_list.append(plugin_name)
+    _plugin_installed_list.append(plugin_name)
 
     if templating:
         path = os.path.normpath(os.path.join(
@@ -52,7 +54,90 @@ def register_template(plugin_name, templating=True):
         template.add_template_path(path, prefix=plugin_name)
 
 
-def get_plugin_controller(plugin_name):
+def get_prohibited_controllers(server_name, namespace):
+    """
+        取得沒有被啟用的 plugin 下
+        """
+    a = set(get_all_controller_in_plugins())
+    b = []
+
+    for plugin in get_enable_plugins_from_db(server_name, namespace):
+        for item in get_controller_in_plugin(plugin):
+            b.append(item)
+    # for plugin in get_enable_plugins_from_db(server_name, namespace):
+    #     helper = get_helper(plugin)
+    #     b.append(plugin)
+    #     if helper is not None and "controllers" in helper:
+    #         logging.info(helper["title"])
+    #         for controller in helper["controllers"]:
+    #             if controller is not None:
+    #                 b.append(controller)
+
+    return a - set(b)
+
+
+def get_helper(plugin_name):
+    try:
+        module = __import__('plugins.%s' % plugin_name, fromlist=['*'])
+        return getattr(module, "plugins_helper")
+    except AttributeError:
+        logging.debug("%s's plugin helper not found" % plugin_name)
+        return None
+    except ImportError:
+        logging.debug("%s's plugin helper not found" % plugin_name)
+        return None
+
+
+@cache('get_all_plugin', 60)
+def get_all_plugin():
+    """
+        取得所有的 controller
+        """
+    c = get_all_controller_in_plugins()
+    b = [item.split(".")[1] if item.find(".") > 0 else item for item in c]
+    c = list(set(b))
+    c.sort(key=b.index)
+    return c
+
+
+@cache('get_all_controller', 60)
+def get_all_controller():
+    """
+        取得所有的 controller
+        """
+    return get_all_controller_in_application() + get_all_controller_in_plugins()
+
+
+@cache('get_all_controller_in_application', 60)
+def get_all_controller_in_application():
+    """
+        取得 Application 目錄下所有的 controller
+        """
+    application_controller = []
+    base_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+    has_controllers_dir = True
+    directory = os.path.join('application', 'controllers')
+    if os.path.exists(directory) is False:
+        has_controllers_dir = False
+        directory = os.path.join('application')
+    directory = os.path.join(base_directory, directory)
+    if not os.path.exists(directory):
+        return
+    for root_path, _, files in os.walk(directory):
+        for file_name in files:
+            if file_name.endswith(".py") == False or file_name in ['__init__.py', 'settings.py']:
+                continue
+            controller_name = file_name.split('.')[0]
+            register_application_controller(controller_name)
+            if has_controllers_dir:
+                application_controller.append("application.controllers.%s" % controller_name)
+    return application_controller
+
+
+def get_controller_in_plugin(plugin_name):
+    """
+        取得特定 plugin 目錄下所有的 controller
+        """
     directory = os.path.join('plugins', plugin_name, 'controllers')
     controllers = []
     for root_path, _, files in os.walk(directory):
@@ -66,50 +151,11 @@ def get_plugin_controller(plugin_name):
         return ["plugins."+plugin_name+".controllers."+plugin_name]
 
 
-def get_prohibited_controller():
-    return set(get_all_controller()) - set(get_enable_list())
-
-
-def get_all_controller():
-    return get_all_controller_in_application() + get_all_controller_in_plugins()
-
-
-def get_all_controller_in_application():
-    # if len(_application_controller) > 0:
-    #     return _application_controller
-    # application_controller = memcache.get('application.all.controller')
-    # if application_controller is not None and len(application_controller) > 0:
-    #     return application_controller
-    application_controller = []
-
-    base_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-    has_controllers_dir = True
-    directory = os.path.join('application', 'controllers')
-    if os.path.exists(directory) is False:
-        has_controllers_dir = False
-        directory = os.path.join('application')
-
-    directory = os.path.join(base_directory, directory)
-    # base_directory_path_len = len(base_directory.split(os.path.sep))
-
-    if not os.path.exists(directory):
-        return
-
-    # walk the app/controllers directory and sub-directories
-    for root_path, _, files in os.walk(directory):
-        for file_name in files:
-            if file_name.endswith(".py") == False or file_name in ['__init__.py', 'settings.py']:
-                continue
-            controller_name = file_name.split('.')[0]
-            register_application_controller(controller_name)
-            if has_controllers_dir:
-                application_controller.append("application.controllers.%s" % controller_name)
-    return application_controller
-
-
+@cache('get_all_controller_in_plugins', 60)
 def get_all_controller_in_plugins():
-    if len(_plugins_controller) > 0:
-        return _plugins_controller
+    """
+        取得 plugins 下所有的 controller
+        """
     plugins_controller = memcache.get('plugins.all.controller')
     if plugins_controller is not None and len(plugins_controller) > 0:
         return plugins_controller
@@ -117,12 +163,15 @@ def get_all_controller_in_plugins():
     dir_plugins = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'plugins'))
     for dirPath in os.listdir(dir_plugins):
         if dirPath.find(".") < 0:
-            plugins_controller += get_plugin_controller(dirPath)
-    memcache.set('plugins.all.controller', plugins_controller, 60)
+            plugins_controller += get_controller_in_plugin(dirPath)
+    memcache.set(key='plugins.all.controller', value=plugins_controller, time=60)
     return plugins_controller
 
 
 def get_enable_plugins_from_db(server_name, namespace):
+    """
+        取得 HostInformation 裡的 Plugins ( 取得已啟用的 Plugin )
+        """
     namespace_manager.set_namespace("shared")
     host_item = HostInformationModel.get_by_host(server_name)
     namespace_manager.set_namespace(namespace)
@@ -130,6 +179,9 @@ def get_enable_plugins_from_db(server_name, namespace):
 
 
 def set_enable_plugins_to_db(server_name, namespace, plugins):
+    """
+        設定 HostInformation 裡的 Plugins ( 設定啟用的 Plugin )
+        """
     namespace_manager.set_namespace("shared")
     host_item = HostInformationModel.get_by_host(server_name)
     host_item.plugins = ",".join(plugins)

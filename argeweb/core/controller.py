@@ -19,7 +19,7 @@ from argeweb.core import routing
 from argeweb.core import scaffold, auth
 from argeweb.core import settings
 from argeweb.core import time_util
-from argeweb.core.datastore import DataStore
+from argeweb.core.datastore import Datastore
 from argeweb.core.function import Function
 from argeweb.core.bunch import Bunch
 from argeweb.core.params import ParamInfo
@@ -40,10 +40,9 @@ def route_menu(*args, **kwargs):
             prefix = ""
             ctrl = f.__module__.split(".")[-1]
             action = f.__name__
+            kwargs["module"] = str(f.__module__)
             if "prefix" in kwargs:
                 prefix = kwargs["prefix"]
-            if "controller" in kwargs:
-                ctrl = kwargs["controller"]
             if "action" in kwargs:
                 action = kwargs["action"]
             for possible_prefix in _prefixes:
@@ -56,7 +55,7 @@ def route_menu(*args, **kwargs):
                 kwargs["uri"] = "%s:%s:%s" % (prefix, ctrl, action)
             else:
                 kwargs["uri"] = "%s:%s" % (ctrl, action)
-            kwargs["controller"] = ctrl
+            kwargs["controller"] = str(f.__module__)
         _temporary_menu_storage.append(kwargs)
         return f
     return inner
@@ -68,9 +67,9 @@ def get_route_menu(list_name=u"", controller=None):
         return []
 
     for menu in _temporary_menu_storage:
-        if menu["controller"] in controller.prohibited_controller:
-            continue
         if menu["list_name"] != list_name:
+            continue
+        if menu["controller"] in controller.prohibited_controllers:
             continue
         uri = menu["uri"]
         if uri in controller.prohibited_actions:
@@ -79,14 +78,8 @@ def get_route_menu(list_name=u"", controller=None):
             url = controller.uri(uri)
         except:
             continue
-        if "sort" in menu:
-            sort = menu["sort"]
-        else:
-            sort = 1
-        if "icon" in menu:
-            icon = menu["icon"]
-        else:
-            icon = "list"
+        sort = menu["sort"] if "sort" in menu else 1
+        icon = menu["icon"] if "icon" in menu else "list"
         if (u"%s" % menu["text"]).startswith(u"gt:"):
             text = u"gt"
             group_title = (u"%s" % menu["text"]).replace(u"gt:", "")
@@ -310,11 +303,11 @@ class Controller(webapp2.RequestHandler, Uri):
         self.application_user = None
         self.application_user_level = 0
         self.prohibited_actions = []
-        self.prohibited_controller = []
+        self.prohibited_controllers = []
         self.params = ParamInfo(self.request)
         self.settings = settings
         self.logging = logging
-        self.datastore = DataStore(self)
+        self.datastore = Datastore(self)
         self.function = Function(self).get_run()
         self.server_name = os.environ["SERVER_NAME"]
         self.host_info = self.settings.get_host_item(self.server_name)
@@ -405,16 +398,17 @@ class Controller(webapp2.RequestHandler, Uri):
         This is the main point in which to listen for events or change dynamic configuration.
         """
         self.startup()
-        self.prohibited_controller = plugins.get_prohibited_controller()
-        if self.name in self.prohibited_controller:
+        self.prohibited_controllers = plugins.get_prohibited_controllers(self.server_name, self.host_info.namespace)
+        name = ".".join(str(self).split(" object")[0][1:].split(".")[0:-1])
+        if name in self.prohibited_controllers:
             # 組件被停用
             self.logging.debug(u"%s is disable" % self.name)
             return self.abort(404)
-        if self.prohibited_actions != []:
+        if name in self.prohibited_actions:
             # 權限不足
             self.logging.debug(u"%s in %s" % (self.name, self.prohibited_actions))
             return self.abort(404)
-        if self.name in self.plugins.get_enable_list():
+        if self.name in self.plugins.get_installed_list():
             self.logging.info("here")
 
     def startup(self):
