@@ -40,7 +40,6 @@ def route_menu(*args, **kwargs):
             prefix = ""
             ctrl = f.__module__.split(".")[-1]
             action = f.__name__
-            kwargs["module"] = str(f.__module__)
             if "prefix" in kwargs:
                 prefix = kwargs["prefix"]
             if "action" in kwargs:
@@ -56,6 +55,7 @@ def route_menu(*args, **kwargs):
             else:
                 kwargs["uri"] = "%s:%s" % (ctrl, action)
             kwargs["controller"] = str(f.__module__)
+            kwargs["action"] = action
         _temporary_menu_storage.append(kwargs)
         return f
     return inner
@@ -71,9 +71,9 @@ def get_route_menu(list_name=u"", controller=None):
             continue
         if menu["controller"] in controller.prohibited_controllers:
             continue
-        uri = menu["uri"]
-        if uri in controller.prohibited_actions:
+        if str(menu["controller"] + "." + menu["action"]) in controller.prohibited_actions:
             continue
+        uri = menu["uri"]
         try:
             url = controller.uri(uri)
         except:
