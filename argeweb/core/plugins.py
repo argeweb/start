@@ -4,7 +4,6 @@ import logging
 import argeweb
 import os
 from model import HostInformationModel
-from caching import cache
 from settings import update_memcache
 from google.appengine.api import namespace_manager
 from google.appengine.api import memcache
@@ -64,19 +63,23 @@ def get_prohibited_controllers(server_name, namespace):
     for plugin in get_enable_plugins_from_db(server_name, namespace):
         for item in get_controller_in_plugin(plugin):
             b.append(item)
-    # for plugin in get_enable_plugins_from_db(server_name, namespace):
-    #     helper = get_helper(plugin)
-    #     b.append(plugin)
-    #     if helper is not None and "controllers" in helper:
-    #         logging.info(helper["title"])
-    #         for controller in helper["controllers"]:
-    #             if controller is not None:
-    #                 b.append(controller)
-
     return a - set(b)
 
 
-def get_helper(plugin_name):
+def get_helper(plugin_name_or_controller):
+    if plugin_name_or_controller is None:
+        return None
+    if isinstance(plugin_name_or_controller, basestring) is True:
+        plugin_name = plugin_name_or_controller
+    else:
+        controller_module_name = str(plugin_name_or_controller.__module__)
+        try:
+            if controller_module_name.startswith('plugins'):
+                plugin_name = controller_module_name.split(".")[1]
+            else:
+                return None
+        except:
+            return None
     try:
         module = __import__('plugins.%s' % plugin_name, fromlist=['*'])
         return getattr(module, "plugins_helper")
@@ -88,7 +91,6 @@ def get_helper(plugin_name):
         return None
 
 
-@cache('get_all_plugin', 60)
 def get_all_plugin():
     """
         取得所有的 controller
@@ -100,7 +102,6 @@ def get_all_plugin():
     return c
 
 
-@cache('get_all_controller', 60)
 def get_all_controller():
     """
         取得所有的 controller
@@ -108,7 +109,6 @@ def get_all_controller():
     return get_all_controller_in_application() + get_all_controller_in_plugins()
 
 
-@cache('get_all_controller_in_application', 60)
 def get_all_controller_in_application():
     """
         取得 Application 目錄下所有的 controller
@@ -151,7 +151,6 @@ def get_controller_in_plugin(plugin_name):
         return ["plugins."+plugin_name+".controllers."+plugin_name]
 
 
-@cache('get_all_controller_in_plugins', 60)
 def get_all_controller_in_plugins():
     """
         取得 plugins 下所有的 controller

@@ -43,7 +43,7 @@ class Scaffolding(object):
         if not hasattr(self.controller, 'Scaffold'):
             setattr(self.controller, 'Scaffold', Scaffold)
 
-        plugins_helper = self.controller.plugins.get_helper(self.controller.name)
+        plugins_helper = self.controller.plugins.get_helper(self.controller)
         if plugins_helper is not None:
             try:
                 titles = plugins_helper["controllers"][str(self.controller.name).split(".")[-1]]["actions"]
