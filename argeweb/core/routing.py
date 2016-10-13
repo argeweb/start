@@ -12,7 +12,7 @@ import argeweb
 import inflector
 from webapp2 import Route
 from webapp2_extras import routes
-import plugins
+import plugins_information
 
 
 def get_true_name_and_argspec(method):
@@ -52,7 +52,7 @@ def auto_route(app_router, app_path=None, debug=True):
     """
     Automatically routes all controllers in main app and plugins
     """
-    for item in plugins.get_all_controller():
+    for item in plugins_information.get_all_controller():
         try:
             route_controllers(app_router, item)
         except ImportError, e:
@@ -84,7 +84,7 @@ def route_controllers(app_router, controller_path=None):
             cls = getattr(module, inflector.camelize(controller_name))
             route_controller(cls, app_router)
             if type_name == "plugins":
-                plugins.register_template(controller_name)
+                plugins_information.register_template(controller_name)
         except AttributeError:
             logging.debug("Controller %s not found, skipping" % inflector.camelize(controller_name))
     except ImportError as e:
