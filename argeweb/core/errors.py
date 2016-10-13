@@ -15,9 +15,11 @@ def generic_handler(code, template=None):
 
     def inner(request, response, exception):
         logging.exception(exception)
-
         response.set_status(code)
-
+        if request.path.find("/admin") == 0:
+            is_backend = True
+        else:
+            is_backend = False
         if 'application/json' in request.headers.get('Accept', []) or request.headers.get('Content-Type') == 'application/json':
             response.text = unicode(json.dumps({
                 'error': str(exception),
@@ -25,10 +27,10 @@ def generic_handler(code, template=None):
             }, encoding='utf-8', ensure_ascii=False))
 
         else:
-            response.content_type = 'text/html'
+            response.content_type = 'text/html; charset=UTF-8'
             response.text = render_template(template, {'request': request, 'exception': exception,
                 'code': code,
-                'is_backend': (request.path.find("/admin") == 0)})
+                'is_backend': is_backend})
 
     return inner
 

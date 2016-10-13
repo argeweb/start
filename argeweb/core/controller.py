@@ -449,6 +449,11 @@ class Controller(webapp2.RequestHandler, Uri):
 
         return auth_result
 
+    def error_and_abort(self, code, *args, **kwargs):
+        self.error(code)
+        return self.abort(code, args, kwargs)
+
+
     def _clear_redirect(self):
         if self.response.status_int in [300, 301, 302]:
             self.response.status = 200
