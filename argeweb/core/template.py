@@ -18,7 +18,7 @@ import types
 import collections
 import argeweb
 import events
-import plugins
+import plugins_information as core_plugins
 import time_util
 
 debug = os.environ.get('SERVER_SOFTWARE', '').startswith('Dev')
@@ -66,7 +66,39 @@ class TemplateEngine(object):
                 for x in non_prefix_template_paths
             ] + non_prefix_template_paths
 
+        def power_loader(path):
+            path = u""+path
+            if path.startswith(u"code:") is True:
+                return path.replace(u"code:", u"")
+            if path.startswith(u"ndb:") is True:
+                from argeweb.core.ndb import decode_key
+                path = str(path).replace(u"ndb:", u"")
+                item = decode_key(path)
+                if item is None:
+                    return None
+                if hasattr(item, "source") is True:
+                    return item.source
+            if path.endswith(u".html") is True:
+                from plugins.code.models.code_model import get_source
+                from plugins.code.models.code_target_model import get_by_name as get_target
+                try:
+                    t = get_target(path)
+                    if t is None:
+                        return None
+                    s = get_source(target=t, code_type="html", version=t.html_version)
+                    if s is None:
+                        return None
+                    return s.source
+                except:
+                    pass
+            # try:
+            #     from plugins.code import load_template
+            # except:
+            #     pass
+            return None
+
         loader = jinja2.ChoiceLoader([
+            jinja2.FunctionLoader(power_loader),
             jinja2.FileSystemLoader(non_prefix_template_paths),
             jinja2.PrefixLoader({
                 k: jinja2.FileSystemLoader(v)
@@ -132,8 +164,8 @@ class TemplateEngine(object):
                 'is_current_user_admin': users.is_current_user_admin,
                 'users': users,
                 'settings': settings(),
-                'has_plugin': plugins.exists,
-                'plugins': plugins.get_installed_list,
+                'has_plugin': core_plugins.exists,
+                'plugins': core_plugins.get_installed_list,
                 'version': argeweb.version,
                 'app_version': os.environ['CURRENT_VERSION_ID'],
                 'hostname': app_identity.get_default_version_hostname(),
