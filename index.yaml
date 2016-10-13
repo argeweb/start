@@ -10,157 +10,6 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
-- kind: GroupInfoModel
-  properties:
-  - name: store
-  - name: sort
-    direction: desc
-
-- kind: ManageInviteModel
-  properties:
-  - name: order_info
-  - name: sort
-    direction: desc
-
-- kind: MessageModel
-  properties:
-  - name: order_info
-  - name: sort
-    direction: desc
-
-- kind: MessageModel
-  properties:
-  - name: purchaser
-  - name: sort
-
-- kind: MessageModel
-  properties:
-  - name: purchaser
-  - name: sort
-    direction: desc
-
-- kind: MessageModel
-  properties:
-  - name: receiver
-  - name: sort
-    direction: desc
-
-- kind: MessageModel
-  properties:
-  - name: store
-  - name: sort
-
-- kind: MessageModel
-  properties:
-  - name: store
-  - name: sort
-    direction: desc
-
-- kind: MessageModel
-  properties:
-  - name: user_a
-  - name: sort
-
-- kind: MobileKeyModel
-  properties:
-  - name: client_id
-  - name: sort
-    direction: desc
-
-- kind: MobileKeyModel
-  properties:
-  - name: mobile
-  - name: sort
-
-- kind: OnlineCodeModel
-  properties:
-  - name: code_type
-  - name: target
-  - name: sort
-    direction: desc
-
-- kind: OnlineCodeModel
-  properties:
-  - name: code_type
-  - name: target
-  - name: vision
-  - name: sort
-    direction: desc
-
-- kind: OnlineCodeTargetModel
-  properties:
-  - name: is_enable
-  - name: sort
-    direction: desc
-
-- kind: OrderDetailModel
-  properties:
-  - name: order_info
-  - name: sort
-    direction: desc
-
-- kind: OrderInfoModel
-  properties:
-  - name: cash_flow_state
-  - name: freight_flow_state
-  - name: official_order
-  - name: purchaser
-  - name: receiver
-  - name: state
-  - name: sort
-    direction: desc
-
-- kind: OrderInfoModel
-  properties:
-  - name: cash_flow_state
-  - name: freight_flow_state
-  - name: official_order
-  - name: purchaser
-  - name: state
-  - name: sort
-    direction: desc
-
-- kind: OrderInfoModel
-  properties:
-  - name: cash_flow_state
-  - name: freight_flow_state
-  - name: official_order
-  - name: state
-  - name: store
-  - name: sort
-    direction: desc
-
-- kind: OrderInfoModel
-  properties:
-  - name: purchaser
-  - name: sort
-    direction: desc
-
-- kind: OrderInfoModel
-  properties:
-  - name: receiver
-  - name: sort
-    direction: desc
-
-- kind: OrderInfoModel
-  properties:
-  - name: state
-  - name: store
-  - name: sort
-    direction: desc
-
-- kind: OrderItemModel
-  properties:
-  - name: order_detail
-  - name: sort
-    direction: desc
-
-- kind: ProductModel
-  properties:
-  - name: store
-  - name: sort
-    direction: desc
-
 - kind: ThemesModel
   properties:
   - name: exclusive
@@ -173,4 +22,44 @@ indexes:
   properties:
   - name: content_type
   - name: created
+    direction: desc
+
+- kind: WebdavModel
+  properties:
+  - name: parent_resource
+  - name: sort
+    direction: desc
+
+- kind: WebdavModel
+  properties:
+  - name: path
+  - name: sort
+    direction: desc
+
+- kind: CodeModel
+  properties:
+  - name: code_type
+  - name: target
+  - name: sort
+    direction: desc
+
+- kind: CodeModel
+  properties:
+  - name: code_type
+  - name: target
+  - name: version
+    direction: desc
+
+- kind: CodeModel
+  properties:
+  - name: version
+  - name: sort
+    direction: desc
+
+- kind: CodeModel
+  properties:
+  - name: code_type
+  - name: target
+  - name: version
+  - name: sort
     direction: desc

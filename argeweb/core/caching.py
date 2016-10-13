@@ -291,11 +291,9 @@ class DatastoreChunkedBackend(object):
     unlike the memcache and local backends. Items stored in the datastore are certain to remain
     until the expiration time passes.  Chunks the data if it is greater than the chunksize (1MB).
     """
-
     chunksize = 1024 * 1024  #1MB
     maxchunks = 20 # limit this to be close to the max obj size, to reduce number of
                    # unnecessary queries.
-
 
     @classmethod
     @ndb.toplevel

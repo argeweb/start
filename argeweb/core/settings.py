@@ -164,7 +164,7 @@ def set_theme(server_name, namespace, theme):
     namespace_manager.set_namespace(namespace)
 
 
-def get_host_item(server_name):
+def get_host_information_item(server_name):
     namespace_manager.set_namespace("shared")
     memcache_key = "shared.info." + server_name
     host_item = memcache.get(memcache_key)
@@ -172,12 +172,13 @@ def get_host_item(server_name):
         host_item = HostInformationModel.get_or_insert(
             host=server_name,
             theme="install",
-            plugins="application_user,application_user_role,backend_ui_material,scaffold,themes,web_file,web_page,web_setting,plugin_manager",
+            plugins="application_user,application_user_role,backend_ui_material,scaffold,themes,web_file,web_page,web_setting,webdav,plugin_manager",
             is_lock=True
         )
     host_item.plugin_enable_list = str(host_item.plugins).split(",")
     host_item.application_controller_list = []
-    return update_memcache(server_name, host_item)
+    host_item = update_memcache(server_name, host_item)
+    return host_item, host_item.namespace, host_item.theme
 
 
 def update_memcache(server_name, host_item=None):

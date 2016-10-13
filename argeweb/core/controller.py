@@ -307,13 +307,11 @@ class Controller(webapp2.RequestHandler, Uri):
         self.params = ParamInfo(self.request)
         self.settings = settings
         self.logging = logging
+        self.plugins = plugins
         self.datastore = Datastore(self)
         self.function = Function(self).get_run()
         self.server_name = os.environ["SERVER_NAME"]
-        self.host_info = self.settings.get_host_item(self.server_name)
-        self.namespace = self.host_info.namespace
-        self.plugins = plugins
-        self.theme = self.host_info.theme
+        self.host_information, self.namespace, self.theme = self.settings.get_host_information_item(self.server_name)
         namespace_manager.set_namespace(self.namespace)
 
     def _build_components(self):
@@ -398,7 +396,7 @@ class Controller(webapp2.RequestHandler, Uri):
         This is the main point in which to listen for events or change dynamic configuration.
         """
         self.startup()
-        self.prohibited_controllers = plugins.get_prohibited_controllers(self.server_name, self.host_info.namespace)
+        self.prohibited_controllers = plugins.get_prohibited_controllers(self.server_name, self.host_information.namespace)
         name = ".".join(str(self).split(" object")[0][1:].split(".")[0:-1])
         if name in self.prohibited_controllers:
             # 組件被停用

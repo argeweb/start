@@ -26,9 +26,10 @@ settings['timezone']['local'] = 'Asia/Taipei'
 settings['email'] = {}
 settings['email']['sender'] = None
 
+# app stats
 settings['appstats'] = {
-    'enabled': False,
-    'enabled_live': False
+    'enabled': True,
+    'enabled_live': True
 }
 
 settings['app_config'] = {
