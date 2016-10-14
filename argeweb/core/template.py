@@ -78,7 +78,7 @@ class TemplateEngine(object):
                     return None
                 if hasattr(item, "source") is True:
                     return item.source
-            if path.endswith(u".html") is True:
+            if path.endswith(u".html") is True and path.startswith(u"backend") is False:
                 from plugins.code.models.code_model import get_source
                 from plugins.code.models.code_target_model import get_by_name as get_target
                 try:

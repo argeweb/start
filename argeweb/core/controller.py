@@ -602,3 +602,4 @@ class Controller(webapp2.RequestHandler, Uri):
     admin_sort_up = scaffold.sort_up
     admin_sort_down = scaffold.sort_down
     admin_set_boolean_field = scaffold.set_boolean_field
+    admin_plugins_check = scaffold.plugins_check

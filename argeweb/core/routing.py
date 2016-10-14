@@ -218,7 +218,6 @@ def build_routes_for_controller(controllercls):
         )
 
         tkwargs.update(kwargs)
-
         # ingest args[0] if its the only thing set
         if len(args) == 1:
             tkwargs['template'] = args[0]
@@ -296,6 +295,9 @@ def build_scaffold_routes_for_controller(controllercls, prefix_name=None):
 
     if hasattr(controllercls, prefix_string + 'set_boolean_field'):
         id.append(Route('/set_boolean_field', controllercls, 'set_boolean_field', handler_method=prefix_string + 'set_boolean_field'))
+
+    if hasattr(controllercls, prefix_string + 'plugins_check'):
+        id.append(Route('/plugins_check', controllercls, 'plugins_check', handler_method=prefix_string + 'plugins_check'))
 
     top_route = routes.NamePrefixRoute(name + ':', top + [
         routes.PathPrefixRoute('/' + name, path + [

@@ -447,3 +447,10 @@ def set_boolean_field(controller, key):
             return
         item.put()
         controller.context["data"] = {"info": "success"}
+
+
+def plugins_check(controller):
+    controller.meta.change_view('jsonp')
+    controller.context['data'] = {
+        'status': "enable"
+    }
