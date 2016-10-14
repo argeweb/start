@@ -18,7 +18,7 @@ import types
 import collections
 import argeweb
 import events
-import plugins_information as core_plugins
+import plugins_information
 import time_util
 
 debug = os.environ.get('SERVER_SOFTWARE', '').startswith('Dev')
@@ -85,7 +85,7 @@ class TemplateEngine(object):
                     t = get_target(path)
                     if t is None:
                         return None
-                    s = get_source(target=t, code_type="html", version=t.html_version)
+                    s = get_source(target=t, code_type="html", version=t.last_version)
                     if s is None:
                         return None
                     return s.source
@@ -164,8 +164,8 @@ class TemplateEngine(object):
                 'is_current_user_admin': users.is_current_user_admin,
                 'users': users,
                 'settings': settings(),
-                'has_plugin': core_plugins.exists,
-                'plugins': core_plugins.get_installed_list,
+                'has_plugin': plugins_information.exists,
+                'plugins': plugins_information.get_installed_list,
                 'version': argeweb.version,
                 'app_version': os.environ['CURRENT_VERSION_ID'],
                 'hostname': app_identity.get_default_version_hostname(),
