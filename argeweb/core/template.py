@@ -30,7 +30,8 @@ class TemplateEngine(object):
         jinja2_env_kwargs = {
             'loader':      self._build_loader(extra_paths=extra_paths),
             'auto_reload': False,
-            'cache_size':  0 if debug else 50,
+            # 'cache_size':  0 if debug else 50,
+            'cache_size':  0,
         }
         events.fire('before_jinja2_environment_creation', engine=self, jinja2_env_kwargs=jinja2_env_kwargs)
         self.environment = jinja2.Environment(**jinja2_env_kwargs)
@@ -42,10 +43,11 @@ class TemplateEngine(object):
         # Paths for resolving template file locations
         non_prefix_template_paths = [
             os.path.normpath(os.path.join(os.path.dirname(argeweb.__file__), '../application/templates')),
-            os.path.normpath(os.path.join(os.path.dirname(argeweb.__file__), './templates'))
+            os.path.normpath(os.path.join(os.path.dirname(argeweb.__file__), './templates')),
+            os.path.normpath(os.path.join(os.path.dirname(argeweb.__file__), '../'))
         ]
         prefix_paths = {
-            'app': os.path.join(os.path.dirname(argeweb.__file__), '../templates/application'),
+            'app': os.path.join(os.path.dirname(argeweb.__file__), '../application/templates'),
             'framework': os.path.join(os.path.dirname(argeweb.__file__), './templates')
         }
 
@@ -78,9 +80,12 @@ class TemplateEngine(object):
                     return None
                 if hasattr(item, "source") is True:
                     return item.source
-            if path.endswith(u".html") is True and path.startswith(u"backend") is False:
+            if path.startswith(u"/") is False:
+                path = u"/" + path
+            if path.endswith(u".html") is True and path.startswith(u"/backend") is False and path.find(u"/admin_") < 0:
                 from plugins.code.models.code_model import get_source
                 from plugins.code.models.code_target_model import get_by_name as get_target
+                logging.info(path)
                 try:
                     t = get_target(path)
                     if t is None:
@@ -91,10 +96,6 @@ class TemplateEngine(object):
                     return s.source
                 except:
                     pass
-            # try:
-            #     from plugins.code import load_template
-            # except:
-            #     pass
             return None
 
         loader = jinja2.ChoiceLoader([

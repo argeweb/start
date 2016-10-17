@@ -11,7 +11,6 @@ _commands = {}
 
 
 def register(name, common_object=None):
-    name = name + ":" + common_object.__name__
     if name in _commands:
         return
     _commands[name] = common_object
@@ -23,19 +22,17 @@ class Datastore(object):
     def __init__(self, controller):
         self._controller = controller
 
-    def get(self, cls_name, common_name, *args, **kwargs):
-        cls_name = cls_name + ":" + common_name
-        if cls_name in _commands:
-            rv = _commands[cls_name](*args, **kwargs)
+    def get(self, name, *args, **kwargs):
+        if name in _commands:
+            rv = _commands[name](*args, **kwargs)
             try:
                 return rv.get()
             except:
                 return rv
 
-    def query(self, cls_name, common_name, *args, **kwargs):
-        cls_name = cls_name + ":" + common_name
-        if cls_name in _commands:
-            query = _commands[cls_name](*args, **kwargs)
+    def query(self, name, *args, **kwargs):
+        if name in _commands:
+            query = _commands[name](*args, **kwargs)
             if "size" not in kwargs:
                 kwargs["size"] = self._controller.params.get_integer("size", 10)
             if "page" not in kwargs:
