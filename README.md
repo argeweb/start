@@ -31,19 +31,22 @@ ArGeWeb 是個基於 [ferris-framework](https://ferris-framework.appspot.com) �
 
     cd plugins
     bower update
-    
-目前預設使用的組件有
 
-    "backend_ui_material": "argeweb/plugin-backend-ui-material",
-    "plugin_manager": "argeweb/plugin-plugin-manager",
-    
----
 更新預設的前端元件
 
     cd static
     bower update
 
-目前預設使用的元件有
+也可以直接執行 update.py 來進行更新
+    
+    
+---
+目前預設使用的組件有
+
+    "backend_ui_material": "argeweb/plugin-backend-ui-material",
+    "plugin_manager": "argeweb/plugin-plugin-manager",
+    
+目前預設使用的前端元件有
 
     "bootstrap": "^3.3.7",
     "jquery": "^2.1.4",
