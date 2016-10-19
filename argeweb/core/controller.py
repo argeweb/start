@@ -294,7 +294,11 @@ class Controller(webapp2.RequestHandler, Uri):
         self.request_start_time = time.time()
         super(Controller, self).__init__(*args, **kwargs)
         self.settings = settings
-        self.server_name = os.environ["SERVER_NAME"]
+        if os.environ.get('SERVER_SOFTWARE', '').startswith('Dev'):
+            paths = "_".join(os.path.dirname(os.path.abspath(__file__)).split("\\")[1:-1])
+            self.server_name = os.environ["SERVER_NAME"] + "@" + paths.lower()
+        else:
+            self.server_name = os.environ["SERVER_NAME"]
         self.host_information, self.namespace, self.theme = self.settings.get_host_information_item(self.server_name)
         self.name = inflector.underscore(self.__class__.__name__)
         self.proper_name = self.__class__.__name__

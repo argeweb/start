@@ -15,7 +15,6 @@ inbound_services:
 
 includes:
 - application/include.yaml
-- plugins/web_file/include.yaml
 
 handlers:
 - url: /(.*?).manifest
