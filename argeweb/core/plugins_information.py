@@ -3,6 +3,7 @@
 import logging
 import argeweb
 import os
+from caching import cache
 from model import HostInformationModel
 from settings import update_memcache
 from google.appengine.api import namespace_manager
@@ -102,6 +103,7 @@ def get_all_plugin():
     return c
 
 
+@cache("get_all_controller")
 def get_all_controller():
     """
         取得所有的 controller
@@ -109,6 +111,7 @@ def get_all_controller():
     return get_all_controller_in_application() + get_all_controller_in_plugins()
 
 
+@cache("get_all_controller_in_application")
 def get_all_controller_in_application():
     """
         取得 Application 目錄下所有的 controller
@@ -151,6 +154,7 @@ def get_controller_in_plugin(plugin_name):
         return ["plugins."+plugin_name+".controllers."+plugin_name]
 
 
+@cache("get_all_controller_in_plugins")
 def get_all_controller_in_plugins():
     """
         取得 plugins 下所有的 controller

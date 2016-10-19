@@ -33,13 +33,16 @@ class Datastore(object):
     def query(self, name, *args, **kwargs):
         if name in _commands:
             query = _commands[name](*args, **kwargs)
+            check_near = 3
             if "size" not in kwargs:
                 kwargs["size"] = self._controller.params.get_integer("size", 10)
             if "page" not in kwargs:
                 kwargs["page"] = self._controller.params.get_integer("page", 1)
             if "near" not in kwargs:
                 kwargs["near"] = self._controller.params.get_integer("near", 10)
-            return self._controller.paging(query, kwargs["size"], kwargs["page"], kwargs["near"])
+            if "data_only" not in kwargs:
+                kwargs["data_only"] = self._controller.params.get_boolean("data_only", True)
+            return self._controller.paging(query, kwargs["size"], kwargs["page"], kwargs["near"], kwargs["data_only"])
 
     def random(self, cls_name, common_name, size=3, *args, **kwargs):
         import random

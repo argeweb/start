@@ -6,6 +6,7 @@
 # Web: http://www.yooliang.com/
 # Date: 2016/6/14.
 import os
+import logging
 debug = os.environ.get('SERVER_SOFTWARE', '').startswith('Dev')
 use_error_handlers = True
 _instance = None
@@ -18,7 +19,7 @@ def get_setting():
     return settings, settings.settings()
 
 
-def get_instance(application_path=None):
+def get_instance():
     global _instance
     if _instance is not None:
         return _instance
@@ -41,7 +42,7 @@ def get_instance(application_path=None):
         _instance.error_handlers[404] = errors.handle_404
         _instance.error_handlers[500] = errors.handle_500
 
-    routing.auto_route(_instance.router, application_path, debug)
+    routing.auto_route(_instance.router, debug)
  
     if (appstats_settings.get('enabled', False) and debug) or appstats_settings.get('enabled_live', True):
         from google.appengine.ext.appstats import recording

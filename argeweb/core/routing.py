@@ -48,7 +48,7 @@ def add(route, app_router=None):
     app_router.add(route)
 
 
-def auto_route(app_router, app_path=None, debug=True):
+def auto_route(app_router, debug=True):
     """
     Automatically routes all controllers in main app and plugins
     """

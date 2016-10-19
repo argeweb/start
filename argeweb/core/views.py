@@ -6,7 +6,6 @@ import json_util
 from protorpc import protojson
 from protorpc.message_types import VoidMessage
 from events import ViewEvents
-from google.appengine.api import namespace_manager
 
 _views = {}
 

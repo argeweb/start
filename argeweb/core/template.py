@@ -31,7 +31,7 @@ class TemplateEngine(object):
             'loader':      self._build_loader(extra_paths=extra_paths),
             'auto_reload': False,
             # 'cache_size':  0 if debug else 50,
-            'cache_size':  0,
+            'cache_size':  400,
         }
         events.fire('before_jinja2_environment_creation', engine=self, jinja2_env_kwargs=jinja2_env_kwargs)
         self.environment = jinja2.Environment(**jinja2_env_kwargs)
@@ -69,6 +69,7 @@ class TemplateEngine(object):
             ] + non_prefix_template_paths
 
         def power_loader(path):
+            logging.info(path)
             path = u""+path
             if path.startswith(u"code:") is True:
                 return path.replace(u"code:", u"")
@@ -80,23 +81,25 @@ class TemplateEngine(object):
                     return None
                 if hasattr(item, "source") is True:
                     return item.source
+            if path.startswith(u"path:") is False:
+                return None
+            path = path.replace(u"path:", u"")
+            path = path.split("?")[0]
             if path.startswith(u"/") is False:
                 path = u"/" + path
-            if path.endswith(u".html") is True and path.startswith(u"/backend") is False and path.find(u"/admin_") < 0:
-                from plugins.code.models.code_model import get_source
-                from plugins.code.models.code_target_model import get_by_name as get_target
-                logging.info(path)
-                try:
-                    t = get_target(path)
-                    if t is None:
-                        return None
-                    s = get_source(target=t, code_type="html", version=t.last_version)
-                    if s is None:
-                        return None
-                    return s.source
-                except:
-                    pass
-            return None
+            from plugins.code.models.code_model import get_source
+            from plugins.code.models.code_target_model import get_target
+            logging.info(path)
+            try:
+                t = get_target(path)
+                if t is None:
+                    return None
+                s = get_source(target=t, code_type="html", version=t.last_version)
+                if s is None:
+                    return None
+                return s.source
+            except:
+                return None
 
         loader = jinja2.ChoiceLoader([
             jinja2.FunctionLoader(power_loader),

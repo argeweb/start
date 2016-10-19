@@ -157,7 +157,6 @@ def get_theme(server_name, namespace):
 def set_theme(server_name, namespace, theme):
     namespace_manager.set_namespace("shared")
     host_item = HostInformationModel.get_by_host(server_name)
-
     host_item.theme = theme
     host_item.put()
     update_memcache(server_name, host_item)
@@ -166,7 +165,7 @@ def set_theme(server_name, namespace, theme):
 
 def get_host_information_item(server_name):
     namespace_manager.set_namespace("shared")
-    memcache_key = "shared.info." + server_name
+    memcache_key = "host.information." + server_name
     host_item = memcache.get(memcache_key)
     if host_item is None:
         host_item = HostInformationModel.get_or_insert(
@@ -175,17 +174,15 @@ def get_host_information_item(server_name):
             plugins="application_user,application_user_role,backend_ui_material,scaffold,themes,web_file,web_page,web_setting,webdav,plugin_manager",
             is_lock=True
         )
+        host_item = update_memcache(server_name, host_item)
     host_item.plugin_enable_list = str(host_item.plugins).split(",")
     host_item.application_controller_list = []
-    host_item = update_memcache(server_name, host_item)
     return host_item, host_item.namespace, host_item.theme
 
 
 def update_memcache(server_name, host_item=None):
     namespace_manager.set_namespace("shared")
-    memcache_key = "shared.info." + server_name
-    if host_item is None:
-        host_item = HostInformationModel.get_or_insert(host=server_name)
+    memcache_key = "host.information." + server_name
     memcache.set(key=memcache_key, value=host_item, time=3600)
     namespace_manager.set_namespace(host_item.namespace)
     return host_item

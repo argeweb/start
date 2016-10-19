@@ -32,7 +32,8 @@ class HostInformationModel(BasicModel):
 
     @classmethod
     def get_by_host(cls, host):
-        return cls.query(cls.host == host).get()
+        q = cls.query(cls.host == host).get_async()
+        return q.get_result()
 
     @classmethod
     def get_by_namespace(cls, namespace):
@@ -40,7 +41,7 @@ class HostInformationModel(BasicModel):
 
     @classmethod
     def get_or_insert(cls, host, theme=None, plugins=None, is_lock=True):
-        item = cls.query(cls.host == host).get()
+        item = cls.get_by_host(host)
         if item is None:
             import random, string
             item = cls()

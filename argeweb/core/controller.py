@@ -10,7 +10,6 @@ from argeweb.core import plugins_information
 from google.appengine.api import users
 from google.appengine.api import namespace_manager
 from webapp2 import cached_property
-from webapp2_extras import routes
 from webapp2_extras import sessions
 from argeweb.core.uri import Uri
 from argeweb.core import inflector, response_handlers, request_parsers, events
@@ -25,8 +24,6 @@ from argeweb.core.bunch import Bunch
 from argeweb.core.params import ParamInfo
 from argeweb.core.ndb import encode_key, decode_key
 from argeweb.core.json_util import parse as json_parse, stringify as json_stringify
-from argeweb.components.pagination import Pagination
-from argeweb.components.search import Search
 
 
 _temporary_route_storage = []
@@ -296,6 +293,9 @@ class Controller(webapp2.RequestHandler, Uri):
     def __init__(self, *args, **kwargs):
         self.request_start_time = time.time()
         super(Controller, self).__init__(*args, **kwargs)
+        self.settings = settings
+        self.server_name = os.environ["SERVER_NAME"]
+        self.host_information, self.namespace, self.theme = self.settings.get_host_information_item(self.server_name)
         self.name = inflector.underscore(self.__class__.__name__)
         self.proper_name = self.__class__.__name__
         self.util = self.Util(weakref.proxy(self))
@@ -305,13 +305,10 @@ class Controller(webapp2.RequestHandler, Uri):
         self.prohibited_actions = []
         self.prohibited_controllers = []
         self.params = ParamInfo(self.request)
-        self.settings = settings
         self.logging = logging
         self.plugins = plugins_information
         self.datastore = Datastore(self)
         self.function = Function(self).get_run()
-        self.server_name = os.environ["SERVER_NAME"]
-        self.host_information, self.namespace, self.theme = self.settings.get_host_information_item(self.server_name)
         namespace_manager.set_namespace(self.namespace)
 
     def _build_components(self):
@@ -407,7 +404,7 @@ class Controller(webapp2.RequestHandler, Uri):
             self.logging.debug(u"%s in %s" % (self.name, self.prohibited_actions))
             return self.abort(404)
         if self.name in self.plugins.get_installed_list():
-            self.logging.info("here")
+            pass
 
     def startup(self):
         pass
@@ -493,7 +490,6 @@ class Controller(webapp2.RequestHandler, Uri):
         # Return value handlers.
         # Response has highest precendence, the view class has lowest
         response_handler = response_handlers.factory(type(result))
-
         if response_handler:
             self.response = response_handler(self, result)
 
@@ -508,11 +504,6 @@ class Controller(webapp2.RequestHandler, Uri):
 
         self.session_store.save_sessions(self.response)
         self.events.clear()
-
-        url = self.request.url
-        url = url.replace(self.request.host_url, "")
-        url = url.replace(":", "%3A")
-        self.response.headers["Request-Url"] = url
         return self.response
 
     @cached_property
@@ -546,13 +537,19 @@ class Controller(webapp2.RequestHandler, Uri):
 
         return parser.process(self.request, container, fallback)
 
-    def paging(self, query, size=None, page=None, near=None):
+    def paging(self, query, size=None, page=None, near=None, data_only=None):
         if page is None:
             page = int(self.params.get_integer("page", 1))
         if size is None:
             size = int(self.params.get_integer("size", 10))
         if near is None:
             near = int(self.params.get_integer("near", 10))
+        if data_only is None:
+            data_only = int(self.params.get_boolean("data_only", True))
+        data = query.fetch_async(size, offset=size*(page-1))
+        if data_only is True:
+            c = data.get_result()
+            return c
         near_2 = near // 2
         pager = {
             "prev": 0,
@@ -571,16 +568,17 @@ class Controller(webapp2.RequestHandler, Uri):
             end = near
         has_next = False
         for i in xrange(start, end):
-            q = query.fetch(size, offset=size*(i-1), keys_only=True)
+            q = query.fetch_async(size, offset=size*(i-1), keys_only=True)
             if page < i:
                 has_next = True
-            if len(q) > 0:
+            q_result = len(q.get_result())
+            if q_result > 0:
                 pager["near_list"].append(i)
-            if len(q) < size:
+            if q_result < size:
                 break
+        pager["data"] = data.get_result()
         if has_next:
             pager["next"] = page + 1
-        pager["data"] = query.fetch(size, offset=size*(page-1))
         return pager
 
     @staticmethod

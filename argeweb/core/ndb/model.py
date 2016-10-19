@@ -221,20 +221,6 @@ class BasicModel(Model):
         super(BasicModel, self).before_put()
 
     @classmethod
-    def all(cls):
-        """
-        Queries all posts in the system, regardless of user, ordered by date created descending.
-        """
-        return cls.query().order(-cls.sort)
-
-    @classmethod
-    def all(cls):
-        """
-        Queries all posts in the system, regardless of user, ordered by date created descending.
-        """
-        return cls.query().order(-cls.sort)
-
-    @classmethod
     def get_prev_one(cls, item):
         return cls.query(cls.sort > item.sort).order(cls.sort).get()
 
@@ -245,12 +231,50 @@ class BasicModel(Model):
     @classmethod
     def get_prev_one_with_category(cls, item, cat):
         c = ndb.Key(urlsafe=cat)
-        return cls.query(cls.category == c, cls.sort > item.sort).order(cls.sort).get()
+        if hasattr(cls, "category"):
+            return cls.query(cls.category == c, cls.sort > item.sort).order(cls.sort).get()
+        else:
+            return None
 
     @classmethod
     def get_next_one_with_category(cls, item, cat):
         c = ndb.Key(urlsafe=cat)
-        return cls.query(cls.category == c, cls.sort < item.sort).order(-cls.sort).get()
+        if hasattr(cls, "category"):
+            return cls.query(cls.category == c, cls.sort < item.sort).order(-cls.sort).get()
+        else:
+            return None
+
+    @classmethod
+    def all(cls):
+        """
+        Queries all posts in the system, regardless of user, ordered by date created descending.
+        """
+        return cls.query().order(-cls.sort)
+
+    @classmethod
+    def all_enable(cls, *args, **kwargs):
+        if hasattr(cls, "is_enable") is False:
+            return None
+        if hasattr(cls, "category") and "category_key" in kwargs:
+            cat = ndb.Key(urlsafe=kwargs["category_key"])
+            if cat is not None:
+                return cls.query(cls.category == cat.key, cls.is_enable == True).order(-cls.sort)
+        else:
+            return cls.query(cls.is_enable == True).order(-cls.sort)
+
+    @classmethod
+    def find_by_name(cls, name):
+        if hasattr(cls, "name"):
+            return cls.query(cls.name == name).get()
+        else:
+            return None
+
+    @classmethod
+    def find_by_title(cls, title):
+        if hasattr(cls, "title"):
+            return cls.query(cls.title == title).get()
+        else:
+            return None
 
     @classmethod
     def has_record(cls):
