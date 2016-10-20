@@ -1,5 +1,5 @@
 application: argeweb
-version: argeweb
+version: 0.1.1
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -68,6 +68,26 @@ handlers:
   http_headers:
     Access-Control-Allow-Origin: "*"
 
+- url: /themes/(.*?)/static/(.*)
+  static_files: themes/\1/static/\2
+  upload: themes/(.*?)/static/(.*)
+  secure: always
+
+- url: /themes/(.*?)/css/(.*)
+  static_files: themes/\1/css/\2
+  upload: themes/(.*?)/css/(.*)
+  secure: always
+
+- url: /themes/(.*?)/js/(.*)
+  static_files: themes/\1/js/\2
+  upload: themes/(.*?)/js/(.*)
+  secure: always
+
+- url: /themes/(.*?)/img/(.*)
+  static_files: themes/\1/img/\2
+  upload: themes/(.*?)/img/(.*)
+  secure: always
+
 - url: /plugins/(.*?)/static/(.*)
   static_files: plugins/\1/static/\2
   upload: plugins/(.*?)/static/(.*)
@@ -92,13 +112,14 @@ handlers:
 - url: /css
   static_dir: static/css
   secure: always
+  mime_type: text/css
   http_headers:
     Access-Control-Allow-Origin: "*"
 
 - url: /js
   static_dir: static/js
   secure: always
-  mime_type: text/css
+  mime_type: text/javascript
   http_headers:
     Access-Control-Allow-Origin: "*"
 
@@ -110,6 +131,18 @@ handlers:
   script: argeweb.deferred_app.app
   secure: always
   login: admin
+
+#- url: /assets/files
+#  script: plugins.webdav.webdav_application.web_dav
+#  secure: always
+#
+#- url: /assets/files/
+#  script: plugins.webdav.webdav_application.web_dav
+#  secure: always
+
+- url: /assets/files/.*
+  script: plugins.webdav.webdav_application.web_dav
+  secure: always
 
 - url: /.*
   script: argeweb.application.instance
