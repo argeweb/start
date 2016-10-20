@@ -1,5 +1,0 @@
-handlers:
-- url: /_ah/mail/login@.+
-  script: application.sms_login.using_mail_receive
-  login: admin
-
