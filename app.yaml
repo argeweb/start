@@ -14,7 +14,6 @@ inbound_services:
 - mail
 
 includes:
-- application/include.yaml
 
 handlers:
 - url: /(.*?).manifest
