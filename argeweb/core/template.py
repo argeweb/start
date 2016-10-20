@@ -13,6 +13,7 @@ import math
 import datetime
 import json
 import jinja2
+from jinja2.exceptions import TemplateNotFound
 import webapp2
 import types
 import collections
@@ -68,41 +69,52 @@ class TemplateEngine(object):
                 for x in non_prefix_template_paths
             ] + non_prefix_template_paths
 
-        def power_loader(path):
-            logging.info(path)
-            path = u""+path
-            if path.startswith(u"code:") is True:
-                return path.replace(u"code:", u"")
-            if path.startswith(u"ndb:") is True:
+        class ChoiceLoader(jinja2.ChoiceLoader):
+            def get_source(self, environment, template):
+                is_assets = template.startswith(u"assets:")
+                for loader in self.loaders:
+                    loader_name = str(loader)
+                    if is_assets and loader_name.find("FunctionLoader") < 0:
+                        continue
+                    try:
+                        return loader.get_source(environment, template)
+                    except TemplateNotFound:
+                        pass
+                raise TemplateNotFound(template)
+
+        def AssetsLoader(template):
+            template = u""+template
+            if template.startswith(u"code:") is True:
+                return template.replace(u"code:", u"")
+            if template.startswith(u"ndb:") is True:
                 from argeweb.core.ndb import decode_key
-                path = str(path).replace(u"ndb:", u"")
-                item = decode_key(path)
+                template = str(template).replace(u"ndb:", u"")
+                item = decode_key(template)
                 if item is None:
                     return None
                 if hasattr(item, "source") is True:
                     return item.source
-            if path.startswith(u"path:") is False:
+            if template.startswith(u"assets:") is False:
                 return None
-            path = path.replace(u"path:", u"")
-            path = path.split("?")[0]
-            if path.startswith(u"/") is False:
-                path = u"/" + path
-            from plugins.code.models.code_model import get_source
-            from plugins.code.models.code_target_model import get_target
-            logging.info(path)
+            template = template.replace(u"assets:", u"")
+            template = template.split("?")[0]
+            if template.startswith(u"/") is False:
+                template = u"/" + template
             try:
-                t = get_target(path)
+                from plugins.code.models.code_model import get_source
+                from plugins.code.models.code_target_model import get_target
+                t = get_target(template)
                 if t is None:
-                    return None
+                    raise TemplateNotFound(template)
                 s = get_source(target=t, code_type="html", version=t.last_version)
                 if s is None:
-                    return None
+                    raise TemplateNotFound(template)
                 return s.source
             except:
-                return None
+                raise TemplateNotFound(template)
 
-        loader = jinja2.ChoiceLoader([
-            jinja2.FunctionLoader(power_loader),
+        loader = ChoiceLoader([
+            jinja2.FunctionLoader(AssetsLoader),
             jinja2.FileSystemLoader(non_prefix_template_paths),
             jinja2.PrefixLoader({
                 k: jinja2.FileSystemLoader(v)
@@ -126,6 +138,7 @@ class TemplateEngine(object):
         return result
 
     def find(self, name):
+        logging.info(name)
         return self.environment.get_or_select_template(name)
 
     def themed(self, name, theme=None):
