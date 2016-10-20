@@ -9,4 +9,5 @@ def run(str_command):
 
 dir = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(dir)
+run ("start chrome http://localhost:8080")
 run ("dev_appserver.py .")

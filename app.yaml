@@ -1,5 +1,5 @@
 application: argeweb
-version: 0.1.1
+version: 2016
 runtime: python27
 api_version: 1
 threadsafe: yes
