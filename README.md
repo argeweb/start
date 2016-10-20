@@ -71,4 +71,27 @@ ArGeWeb 是個基於 [ferris-framework](https://ferris-framework.appspot.com) �
 * [Node js](https://nodejs.org/en/) 
 * [bower](https://bower.io/)    安裝 ( npm install -g bower )
 
+---
+# License
+#### ArGeWeb Framework
 
+Copyright (C) 2016 QiLiang Wen
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+#### Third-party libraries
+ 
+That are in the packages directory have varying licenses. Please check the license file that is included within each package.
+
+* Ferris: Apache License, Version 2
+* httplib2 : MPL 1.1/GPL 2.0/LGPL 2.1
+* ProtoPigeon: Apache License v2
+* WTForms: BSD
+* PyTZ: MIT
+* mosql: MIT
+* GData Client Library: Apache License v2
+* Google API Python Client Library: Apache License v2
