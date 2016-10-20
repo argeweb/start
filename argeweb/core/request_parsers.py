@@ -51,13 +51,15 @@ class FormParser(RequestParser):
     container_name = 'Form'
 
     def process(self, request, container, fallback=None):
-        from argeweb.core.wtforms.wtforms_json import MultiDict, flatten_json
+        from argeweb.libs.wtforms_json import MultiDict, flatten_json
 
         if inspect.isclass(container):
             container = container()
 
         if request.content_type == 'application/json':
             request_data = MultiDict(flatten_json(container.__class__, parse_json(request.body)))
+        elif request.method in ('GET'):
+            request_data = None
         else:
             request_data = request.params
 

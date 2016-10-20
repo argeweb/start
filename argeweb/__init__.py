@@ -3,10 +3,10 @@
 version = "0.1.1"
 
 import packages
-from core.gaeforms import model_form
+# from core.gaeforms import model_form
 from argeweb.core.controller import Controller, route, route_with, route_menu
 from argeweb.core.controller import add_authorizations
-from argeweb.core.wtforms import wtforms
+from argeweb.libs import wtforms
 from argeweb.core import settings as settings
 from argeweb.core import inflector, caching
 from argeweb.core import scaffold

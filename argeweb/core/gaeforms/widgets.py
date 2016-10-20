@@ -5,11 +5,12 @@
 # Author: Qi-Liang Wen (温啓良）
 # Web: http://www.yooliang.com/
 # Date: 2015/7/12.
-from argeweb.core.wtforms.wtforms.widgets import html_params, HTMLString
-from argeweb.core.wtforms.wtforms.compat import text_type
+from argeweb.libs import wtforms
 from cgi import escape
 
-
+html_params = wtforms.widgets.html_params
+HTMLString = wtforms.widgets.HTMLString
+text_type = wtforms.compat.text_type
 class MultipleReferenceCheckboxWidget(object):
     """
     Widget for MultipleReferenceField. Displays options as checkboxes"""

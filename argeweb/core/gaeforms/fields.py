@@ -5,10 +5,11 @@ import decimal
 from google.appengine.ext import db, ndb, blobstore
 from google.appengine.api.users import User
 
-from argeweb.core.wtforms import wtforms
-from argeweb.core.wtforms.wtforms.compat import string_types
+from argeweb.libs import wtforms
+# import wtforms.compat.string_types
 from argeweb.core.gaeforms import widgets
 
+TextField = wtforms.StringField
 
 class UserField(wtforms.Field):
     """
@@ -227,7 +228,7 @@ class BlobKeyField(wtforms.FileField):
             blobstore.delete(info.key())
 
 
-class GeoPtPropertyField(wtforms.fields.TextField):
+class GeoPtPropertyField(TextField):
     def process_formdata(self, valuelist):
         if valuelist:
             try:
@@ -237,7 +238,7 @@ class GeoPtPropertyField(wtforms.fields.TextField):
             except (decimal.InvalidOperation, ValueError):
                 raise ValueError('Not a valid coordinate location')
 
-class ImagePropertyField(wtforms.fields.TextField):
+class ImagePropertyField(TextField):
     """
     Identical to the non-ndb counterpart, but only supports ndb references.
     """

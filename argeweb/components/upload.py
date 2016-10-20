@@ -4,7 +4,7 @@ import cgi
 from google.appengine.ext import blobstore
 from google.appengine.api import app_identity
 
-from argeweb.core.wtforms import wtforms
+from argeweb.libs import wtforms
 from argeweb.core import settings
 
 
