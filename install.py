@@ -14,10 +14,15 @@ def main():
     for n in xrange(0, len(sys.argv)):
         arg = str(sys.argv[n])
         if n == 1 and arg.find("=") < 0:
-            if arg.startswith("argeweb/plugins-") is True:
+            if arg.startswith("argeweb/plugin-") is True:
                 arg = "_".join(arg.split("-")[1:]) + "=" + arg
                 argv.append(arg)
+            else:
+                argv.append(arg)
 
+    dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'plugins')
+    os.chdir(dir)
+    print argv
     run("bower install " + " ".join(argv) + " -save")
 
 
