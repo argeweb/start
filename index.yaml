@@ -10,6 +10,45 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: CodeModel
+  properties:
+  - name: content_type
+  - name: target
+  - name: sort
+    direction: desc
+
+- kind: CodeModel
+  properties:
+  - name: content_type
+  - name: target
+  - name: version
+  - name: sort
+    direction: desc
+
+- kind: CodeModel
+  properties:
+  - name: content_type
+  - name: target
+  - name: version
+    direction: desc
+
+- kind: CodeModel
+  properties:
+  - name: version
+  - name: sort
+    direction: desc
+
+- kind: CodeTargetModel
+  properties:
+  - name: content_type
+  - name: title
+
+- kind: ServiceModel
+  properties:
+  - name: is_enable
+  - name: sort
+    direction: desc
+
 - kind: ThemesModel
   properties:
   - name: exclusive
@@ -33,33 +72,5 @@ indexes:
 - kind: WebdavModel
   properties:
   - name: path
-  - name: sort
-    direction: desc
-
-- kind: CodeModel
-  properties:
-  - name: code_type
-  - name: target
-  - name: sort
-    direction: desc
-
-- kind: CodeModel
-  properties:
-  - name: code_type
-  - name: target
-  - name: version
-    direction: desc
-
-- kind: CodeModel
-  properties:
-  - name: version
-  - name: sort
-    direction: desc
-
-- kind: CodeModel
-  properties:
-  - name: code_type
-  - name: target
-  - name: version
   - name: sort
     direction: desc
