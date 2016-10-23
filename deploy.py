@@ -9,4 +9,5 @@ def run(str_command):
 
 dir = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 os.chdir(dir)
-run ("gcloud app deploy")
+# run ("gcloud app deploy app.yaml --project argeweb-framework")
+run ("appcfg.py update . -A argeweb-framework -V 2016")

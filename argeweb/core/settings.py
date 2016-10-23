@@ -171,7 +171,7 @@ def get_host_information_item(server_name):
         host_item = HostInformationModel.get_or_insert(
             host=server_name,
             theme="install",
-            plugins="application_user,application_user_role,backend_ui_material,scaffold,themes,web_file,web_page,web_setting,webdav,plugin_manager",
+            plugins="application_user,application_user_role,backend_ui_material,scaffold,themes,user_file,web_page,web_setting,webdav,plugin_manager",
             is_lock=True
         )
         host_item = update_memcache(server_name, host_item)
