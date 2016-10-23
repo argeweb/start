@@ -39,12 +39,16 @@ ArGeWeb 是個基於 [ferris-framework](https://ferris-framework.appspot.com) �
 
 也可以直接執行 update.py 來進行更新
     
-    
 ---
 目前預設使用的組件有
 
     "backend_ui_material": "argeweb/plugin-backend-ui-material",
     "plugin_manager": "argeweb/plugin-plugin-manager",
+
+這2個組件還另外依賴了
+
+    "application_user": "argeweb/plugin-application-user",
+    "user_file": "argeweb/plugin-user-file",
     
 目前預設使用的前端元件有
 
@@ -95,3 +99,5 @@ That are in the packages directory have varying licenses. Please check the licen
 * mosql: MIT
 * GData Client Library: Apache License v2
 * Google API Python Client Library: Apache License v2
+
+若有疏露沒有列舉到的地方，請多多見讓，再麻煩告知我們
