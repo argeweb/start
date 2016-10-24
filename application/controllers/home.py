@@ -23,7 +23,7 @@ class Home(Controller):
     @route_with('/index.html')
     def index(self):
         # 從 實體檔案 讀取樣版 (template, themes 相關目錄)
-        self.meta.view.template_name = u"assets:/index.html"
+        self.meta.view.template_name = u"/index.html"
 
         # 從 Datastore 讀取樣版
         #self.meta.view.template_name = u"assets:/index.html?r=" + str(random.random())
@@ -31,7 +31,7 @@ class Home(Controller):
     @route_with(template='/<:(.*)>.html')
     def all_path(self, path):
         # 從 實體檔案 讀取樣版 (template, themes 相關目錄)
-        self.meta.view.template_name = u"assets:/" + path + u".html"
+        self.meta.view.template_name = u"/" + path + u".html"
 
         # 從 Datastore 讀取樣版
         #self.meta.view.template_name = u"assets:/" + path + u".html?r=" + str(random.random())
