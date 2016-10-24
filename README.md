@@ -8,7 +8,7 @@ ArGeWeb 是個基於 [ferris-framework](https://ferris-framework.appspot.com) �
 
 並在此基礎上進行了開發，以期能讓功能可以重覆進行使用
 
-此啟始包還包含了 2個比較重要的組件
+此啟始包一共包含了 4個比較重要的組件
 
 分別為
 
@@ -19,6 +19,14 @@ ArGeWeb 是個基於 [ferris-framework](https://ferris-framework.appspot.com) �
 　　　　Material 風格的後台管理介面
   
 　　　　[backend_ui_material](https://github.com/argeweb/plugin-backend-ui-material)
+  
+　　　　組件管理功能
+  
+　　　　[plugin_manager](https://github.com/argeweb/plugin-plugin-manager)
+  
+　　　　提供網站使用者進行檔案上傳
+  
+　　　　[user_file](https://github.com/argeweb/plugin-user-file)
 
 
 # 快速上手
@@ -100,4 +108,4 @@ That are in the packages directory have varying licenses. Please check the licen
 * GData Client Library: Apache License v2
 * Google API Python Client Library: Apache License v2
 
-若有疏露沒有列舉到的地方，請多多見讓，再麻煩告知我們
+若有疏露沒有列舉到的地方，請多多見諒，再麻煩告知我們

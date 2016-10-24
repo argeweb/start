@@ -92,11 +92,11 @@ def get_helper(plugin_name_or_controller):
         return None
 
 
-def get_all_plugin():
+def get_all_plugin(use_cache=True):
     """
         取得所有的 controller
         """
-    c = get_all_controller_in_plugins()
+    c = get_all_controller_in_plugins(use_cache)
     b = [item.split(".")[1] if item.find(".") > 0 else item for item in c]
     c = list(set(b))
     c.sort(key=b.index)
@@ -155,13 +155,14 @@ def get_controller_in_plugin(plugin_name):
 
 
 @cache("get_all_controller_in_plugins")
-def get_all_controller_in_plugins():
+def get_all_controller_in_plugins(use_cache=True):
     """
         取得 plugins 下所有的 controller
         """
-    plugins_controller = memcache.get('plugins.all.controller')
-    if plugins_controller is not None and len(plugins_controller) > 0:
-        return plugins_controller
+    if use_cache is True:
+        plugins_controller = memcache.get('plugins.all.controller')
+        if plugins_controller is not None and len(plugins_controller) > 0:
+            return plugins_controller
     plugins_controller = []
     dir_plugins = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'plugins'))
     for dirPath in os.listdir(dir_plugins):
