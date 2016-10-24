@@ -1,0 +1,28 @@
+{
+  "name": "argeweb-core",
+  "authors": [
+    "cwen0708 <cwen0708@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "keywords": [
+    "google",
+    "app",
+    "engine",
+    "argeweb"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/argeweb/core",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "behaviors": "argeweb/behaviors",
+    "components": "argeweb/components",
+    "core": "argeweb/core"
+  }
+}

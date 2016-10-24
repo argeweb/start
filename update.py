@@ -12,6 +12,9 @@ def run(str_command):
 def main():
     argv = []
     if len(sys.argv) == 1:
+        dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'argeweb')
+        os.chdir(dir)
+        run ("bower update")
         target_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'plugins')
         os.chdir(target_dir)
         run("bower update")
@@ -23,7 +26,6 @@ def main():
             arg = str(sys.argv[n])
             if n == 1 and arg.find("=") < 0:
                 if arg.startswith("argeweb/plugin-") is True:
-                    print arg
                     arg = "_".join(arg.split("-")[1:]) + "=" + arg
                     argv.append(arg)
                 else:
