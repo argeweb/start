@@ -22,11 +22,17 @@ class Home(Controller):
     @route_with('/')
     @route_with('/index.html')
     def index(self):
-        pass
+        # 從 實體檔案 讀取樣版 (template, themes 相關目錄)
+        self.meta.view.template_name = u"assets:/index.html"
+
+        # 從 Datastore 讀取樣版
+        #self.meta.view.template_name = u"assets:/index.html?r=" + str(random.random())
 
     @route_with(template='/<:(.*)>.html')
     def all_path(self, path):
-        self.meta.view.template_name = u"assets:/" + path + u".html?r=" + str(random.random())
-        # self.meta.view.template_name = u"code:中文 aaaaa {{ function ('ge_information', hostname=framework.hostname) }}"
-        # return {"path": path}
+        # 從 實體檔案 讀取樣版 (template, themes 相關目錄)
+        self.meta.view.template_name = u"assets:/" + path + u".html"
+
+        # 從 Datastore 讀取樣版
+        #self.meta.view.template_name = u"assets:/" + path + u".html?r=" + str(random.random())
 
