@@ -11,14 +11,23 @@ def run(str_command):
 
 def main():
     argv = []
-    for n in xrange(0, len(sys.argv)):
-        arg = str(sys.argv[n])
-        if n == 1 and arg.find("=") < 0:
-            if arg.startswith("argeweb/plugin-") is True:
-                arg = "_".join(arg.split("-")[1:]) + "=" + arg
-                argv.append(arg)
+    if len(sys.argv) == 1:
+        plugin = raw_input("Please enter plugin name: ")
+        if plugin.find("=") < 0:
+            if plugin.startswith("argeweb/plugin-") is True:
+                plugin = "_".join(plugin.split("-")[1:]) + "=" + plugin
+                argv.append(plugin)
             else:
-                argv.append(arg)
+                argv.append(plugin)
+    else:
+        for n in xrange(0, len(sys.argv)):
+            arg = str(sys.argv[n])
+            if n == 1 and arg.find("=") < 0:
+                if arg.startswith("argeweb/plugin-") is True:
+                    arg = "_".join(arg.split("-")[1:]) + "=" + arg
+                    argv.append(arg)
+                else:
+                    argv.append(arg)
 
     dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'plugins')
     os.chdir(dir)

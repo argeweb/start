@@ -1,5 +1,3 @@
-application: argeweb
-version: 2016
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -14,6 +12,7 @@ inbound_services:
 - mail
 
 includes:
+- plugins/user_file/include.yaml
 
 handlers:
 - url: /(.*?).manifest
@@ -25,10 +24,6 @@ handlers:
   static_files: static/\1.appcache
   upload: static/(.*?).appcache
   mime_type: text/cache-manifest
-
-- url: /manifest-3.json
-  static_files: static/manifest.json
-  upload: static/manifest.json
 
 - url: /favicon.ico
   static_files: static/favicon.ico
