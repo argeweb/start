@@ -24,9 +24,17 @@ class Home(Controller):
     def index(self):
         # 從 實體檔案 讀取樣版 (template, themes 相關目錄)
         self.meta.view.template_name = u"/index.html"
-
+        self.context["server_name"] = self.server_name
+        self.context["namespace"] = self.namespace
+        self.context["information"] = self.host_information
         # 從 Datastore 讀取樣版
         #self.meta.view.template_name = u"assets:/index.html?r=" + str(random.random())
+
+    @route_with(template='/docs/<:(.*)>.html')
+    def doc_path(self, path):
+        self.meta.view.theme = "prettydocs"
+        self.meta.view.template_name = u"/" + path + u".html"
+        self.context["docs_name"] = "ArGeWeb"
 
     @route_with(template='/<:(.*)>.html')
     def all_path(self, path):
