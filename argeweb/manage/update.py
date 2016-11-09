@@ -14,9 +14,8 @@ def main():
     base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
     if len(sys.argv) == 1:
         dir = os.path.join(base_dir, "argeweb")
-        print " a " + dir
         os.chdir(dir)
-        run ("bower update")
+        run ("bower update -f")
         target_dir = os.path.join(base_dir, "plugins")
         os.chdir(target_dir)
         run("bower update")
