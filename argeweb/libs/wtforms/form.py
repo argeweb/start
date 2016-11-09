@@ -40,7 +40,7 @@ class BaseForm(object):
 
         if hasattr(fields, 'items'):
             fields = fields.items()
-
+        self.locales = ['zh_TW', 'en']
         translations = self.meta.get_translations(self)
         extra_fields = []
         if meta.csrf:
