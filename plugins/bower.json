@@ -23,7 +23,8 @@
   "dependencies": {
     "application_user": "argeweb/plugin-application-user",
     "backend_ui_material": "argeweb/plugin-backend-ui-material",
-    "user_file": "argeweb/plugin-user-file",
-    "plugin_manager": "argeweb/plugin-plugin-manager"
+    "plugin_manager": "argeweb/plugin-plugin-manager",
+    "themes": "argeweb/plugin-themes",
+    "user_file": "argeweb/plugin-user-file"
   }
 }

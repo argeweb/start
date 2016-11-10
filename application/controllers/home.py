@@ -24,11 +24,11 @@ class Home(Controller):
     def index(self):
         # 從 實體檔案 讀取樣版 (template, themes 相關目錄)
         self.meta.view.template_name = u"/index.html"
-        self.context["server_name"] = self.server_name
-        self.context["namespace"] = self.namespace
-        self.context["information"] = self.host_information
-        # 從 Datastore 讀取樣版
-        #self.meta.view.template_name = u"assets:/index.html?r=" + str(random.random())
+        if self.theme == "default":
+            self.meta.view.template_name = u"/%s.html" % self.params.get_string("hl", u"index").lower().replace("-", "")
+            self.context["server_name"] = self.server_name
+            self.context["namespace"] = self.namespace
+            self.context["information"] = self.host_information
 
     @route_with(template='/docs/<:(.*)>.html')
     def doc_path(self, path):

@@ -37,7 +37,7 @@
                 <div class="navbar-collapse collapse" id="navbar-collapse">
                     <ul class="nav navbar-nav">
                         <li class="active nav-item sr-only"><a class="scrollto" href="#promo">Home</a></li>
-                        <li class="nav-item"><a href="/?hl=en-us">Engilsh</a></li>
+                        <li class="nav-item"><a href="/">中文</a></li>
                         <li class="nav-item"><a class="scrollto" href="#about">About</a></li>
                         <li class="nav-item"><a class="scrollto" href="#features">Plugins</a></li>
                         <li class="nav-item"><a class="scrollto" href="#license">License</a></li>
@@ -54,7 +54,7 @@
             <h2 class="title">ArGe<span class="highlight">Web</span></h2>
             <p class="intro"><br></p>
             <div class="btns">
-                <a class="btn btn-cta-primary" href="/admin">前往管理後台</a>
+                <a class="btn btn-cta-primary" href="/admin">Go To Backend</a>
             </div>
             <ul class="meta list-inline">
                 <li><a href="https://github.com/argeweb/start" target="_blank">View on GitHub</a></li>
@@ -65,7 +65,7 @@
         <div class="social-media">
             <div class="social-media-inner container text-center">
                 <ul class="list-inline">
-                    <li><span style="float: left;position: relative;top: -3px;">ArGeWeb 起始包</span></li>
+                    <li><span style="float: left;position: relative;top: -3px;">ArGeWeb Start Package</span></li>
                     <li><a class="github-button" href="https://github.com/argeweb/start" data-style="mega" data-count-href="/argeweb/start/stargazers" data-count-api="/repos/argeweb/start#stargazers_count" data-count-aria-label="# stargazers on GitHub" aria-label="Star argeweb/start on GitHub">Star</a></li>
                     <li><a class="github-button" href="https://github.com/argeweb/start/fork" data-icon="octicon-repo-forked" data-style="mega" aria-label="Fork argeweb/start on GitHub">Fork</a></li>
                     <li><a class="github-button" href="https://github.com/argeweb/start/archive/master.zip" data-icon="octicon-cloud-download" data-style="mega" aria-label="Download argeweb/start on GitHub">Download</a></li>
@@ -79,19 +79,19 @@
         <div class="container">
             <h2 class="title text-center">About</h2>
             <p class="intro">
-                <strong>ArGeWeb Framework 已經成功的運行在這個伺服器上了</strong><br><br>
-                伺服器識別名稱 : {{ server_name }}<br>
-                資料儲存空間 : {{ namespace }}<br><br>
-                佈景主題名稱 : {{ information.theme }} <br>
-                佈景主題路徑 : /themes/{{ information.theme }} <br> <br>
-                此樣式為 argeweb 預設樣式, (由 <a href="http://themes.3rdwavemedia.com/" target="_blank"> Xiaoying Riley</a> 設計提供給開發者)
+                <strong>The ArGeWeb Framework has been successfully running on this server</strong><br><br>
+                Server Name : {{ server_name }}<br>
+                Datastore Namespace : {{ namespace }}<br><br>
+                Theme Name : {{ information.theme }} <br>
+                Theme Path : /themes/{{ information.theme }} <br> <br>
+                This style is argeweb's default theme style, (Designed with  by <a href="http://themes.3rdwavemedia.com/" target="_blank"> Xiaoying Riley</a> for developers)
             </p>
         </div>
     </section>
     <section id="features" class="about section" style="padding-bottom: 0px">
         <div class="container">
             <h2 class="title text-center">Plugins</h2>
-            <p class="intro">下列是預設已安裝於 argeweb 的套件, 你還可以透過 install.py 去安裝更多的組件</p>
+            <p class="intro">Below is the default plugin, installed in the initial package, you can use install.py to install more plug-ins</p>
             <div class="row">
                 <div class="item col-md-4 col-sm-6 col-xs-12">
                     <div class="icon-holder">
@@ -99,7 +99,7 @@
                     </div>
                     <div class="content">
                         <h3 class="sub-title">application_user</h3>
-                        <p>基礎的網站使用者, 具權限與身份機制.</p>
+                        <p>Basic web site users, with permissions and identity mechanisms.</p>
                     </div>
                 </div>
                 <div class="item col-md-4 col-sm-6 col-xs-12">
@@ -108,7 +108,7 @@
                     </div>
                     <div class="content">
                         <h3 class="sub-title">backend_ui_material</h3>
-                        <p>Material 風格的網站管理後台, 使用 <a href="https://github.com/Daemonite/material">Daemonite Material UI</a> 建立的, 子頁面是利用 iframe, 並加入了拖曳上傳, 排序等功能.</p>
+                        <p>Use <a href="https://github.com/Daemonite/material">Daemonite Material UI</a> to build the backend management interface, Sub-page use iframe, and increase file drag and drop upload, sorting and more features.</p>
                     </div>
                 </div>
                 <div class="item col-md-4 col-sm-6 col-xs-12">
@@ -117,8 +117,7 @@
                     </div>
                     <div class="content">
                         <h3 class="sub-title">user_file</h3>
-                        <p>
-                            提供網站使用者進行檔案上傳, 上傳至 Google cloud storage, 並提供管理介面.<br><br></p>
+                        <p>Simplifies the process of uploading files to Google cloud storage, and provides a management interface on the backend.<br><br></p>
                     </div>
                 </div>
             </div>
@@ -130,7 +129,7 @@
                     </div>
                     <div class="content">
                         <h3 class="sub-title">plugin_manager</h3>
-                        <p>可讓使用者自已決定是否啟用套件.</p>
+                        <p>To manage all plugins In argeweb, you can enable or disable certain features at any time.</p>
                     </div>
                 </div>                
                 <div class="item col-md-4 col-sm-6 col-xs-12">
@@ -139,7 +138,7 @@
                     </div>
                     <div class="content">
                         <h3 class="sub-title">code</h3>
-                        <p>提供開發人員, 使其在線上編輯源始碼, 並為 css, js 提供壓縮版本</p>
+                        <p>Provide developers with the ability to edit source code online and provide a compressed version of css, js</p>
                     </div>
                 </div>
                 <div class="item col-md-4 col-sm-6 col-xs-12">
@@ -148,7 +147,7 @@
                     </div>
                     <div class="content">
                         <h3 class="sub-title">more...</h3>
-                        <p>在我們的 Github 上, 你還可以找到更多的組件 <a href="https://github.com/argeweb">https://github.com/argeweb</a>, 像是 banner news product ...</p>
+                        <p>You can find more components on <a href="https://github.com/argeweb">https://github.com/argeweb</a>, like banner news product ....</p>
                     </div>
                 </div>               
             </div>
@@ -207,8 +206,9 @@
                     </div><!--//profile-->
                     <div class="speech-bubble">
                         <p>
-                            我們由衷的希望這個框架可以幫助你去建立網站.<br>
-                            如果你有任何的問題或建議, 可以利用下列的方式跟我們連絡</p>
+                            We sincerely hope that this framework can help you to build the website.<br>
+                            If you have any suggestions or questions,<br>
+                            You can contact us via the contact details below</p>
                         <div class="source">
                             <span class="name"><a href="https://cwen0708.space" target="_blank">cwen0708&lt;QiLiang Wen&gt;</a></span>
                             <br />
@@ -218,7 +218,7 @@
                 </div>
                 <div class="clearfix"></div>
                 <div class="info text-center">
-                    <h4 class="sub-title">聯絡方式</h4>
+                    <h4 class="sub-title">Get Connected</h4>
                     <ul class="social-icons list-inline">
                         <li><a href="mailto:cwen0708@yooliang.com"><i class="fa fa-envelope"></i></a></li>
                         <li><a href="https://www.facebook.com/cwen0708" target="_blank"><i class="fa fa-facebook"></i></a></li>
@@ -233,7 +233,7 @@
 
     <footer class="footer">
         <div class="container text-center">
-            <small class="copyright">此樣式由 <i class="fa fa-heart"></i> by <a href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> 所設計給開發者</small>
+            <small class="copyright">Theme Designed with <i class="fa fa-heart"></i> by <a href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> for developers</small>
         </div>
     </footer>
     <script type="text/javascript" src="/static/components/jquery/dist/jquery.min.js"></script>
