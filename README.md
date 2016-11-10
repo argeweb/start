@@ -45,9 +45,37 @@ ArGeWeb 是個基於 [ferris-framework](https://ferris-framework.appspot.com) �
     cd static
     bower update
 
-也可以直接執行 update.py 來進行更新
+也可以直接執行 [manage.py](https://github.com/argeweb/start/blob/master/manage.py) 來進行更新，[manage.py](https://github.com/argeweb/start/blob/master/manage.py) 會調用 argeweb/manage/ 目錄下的相關功能
+
+    manage.py update
+
+實際上是運行 argeweb/manage/ 目錄下的 [update.py](https://github.com/argeweb/start/blob/master/argeweb/manage/update.py)
+下列是 Windows 下的批次檔，可以協助你更快的完成這些事
+
+    @echo off
+    set /p project= Enter Project Name:
+    git clone https://github.com/argeweb/start.git %project%
+    cd %project%
+    cd argeweb\manage
+    update.py
+    run.py
+    open.py
+
+# 佈署到 Google App Engine
+佈署到 Google App Engine 上，使用 argeweb/manage/deploy.py，或是
+
+    manage.py update
+
+這將會在 argeweb/manage 下建一個 project.json 的設定檔，若你需要佈署不同版本時，你也可以使用下面方式來建立其它設定，
     
----
+    manage.py deploy [config-name]
+    如
+    manage.py deploy a01
+  
+同樣的，他這將會在 argeweb/manage 下建一個 a01.json 的設定檔
+
+    
+# 預設使用組件
 目前預設使用的組件有
 
     "backend_ui_material": "argeweb/plugin-backend-ui-material",
@@ -74,6 +102,22 @@ ArGeWeb 是個基於 [ferris-framework](https://ferris-framework.appspot.com) �
     "bootstrap-table": "^1.11.0",
     "animate.css": "^3.5.2"
 
+# 管理工具
+  
+  位於 argeweb/manage/ 下的工具可以幫助我們更快的完成一些工作
+  使用 dev_appserver.py . 運行，或是利用下列的方式
+     
+    manage.py run
+    
+  安裝組件
+     
+    manage.py install
+    manage.py install code
+    manage.py install argeweb/plugin-code
+   
+  
+  
+ 
 # 相關工具與程式
 * [Python 2.7](https://www.python.org/downloads/)
 * [Google App Engine Quickstart for python](https://cloud.google.com/appengine/docs/python/quickstart) 

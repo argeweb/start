@@ -23,6 +23,7 @@
   "dependencies": {
     "behaviors": "argeweb/behaviors",
     "components": "argeweb/components",
-    "core": "argeweb/core"
+    "core": "argeweb/core",
+    "manage": "argeweb/manage"
   }
 }
