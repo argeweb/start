@@ -22,6 +22,7 @@ def main():
         target_dir = os.path.join(base_dir, "static")
         os.chdir(target_dir)
         run("bower update")
+        run("bower list --paths --json > bower_path.json")
     else:
         for n in xrange(0, len(sys.argv)):
             arg = str(sys.argv[n])
