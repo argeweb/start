@@ -1,3 +1,4 @@
+module: defualt
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -34,9 +35,9 @@ handlers:
   static_files: static/robots.txt
   upload: static/robots.txt
 
-- url: /(.+\.(otf|eot|svg|ttf|woff))$
+- url: /(.+\.(otf|eot|svg|ttf|woff|woff2))$
   static_files: \1
-  upload: (.+\.(otf|eot|svg|ttf|woff))
+  upload: (.+\.(otf|eot|svg|ttf|woff|woff2))
   mime_type: application/octet-stream
   secure: always
 
@@ -155,8 +156,7 @@ libraries:
   version: latest
 - name: lxml
   version: latest
-#- name: ssl
-#  version: latest
+#ssl
 
 skip_files:
 - ^(.*/)?#.*#$
