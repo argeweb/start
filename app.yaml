@@ -62,12 +62,20 @@ handlers:
 #  script: plugins.webdav.webdav_application.web_dav
 #  secure: always
 
-- url: /(.+\.(js|css))$
-  script: plugins.code.getfile_app
-
-- url: /assets/files/.*
+- url: /webdav
   script: plugins.webdav.webdav_application.web_dav
   secure: always
+
+- url: /webdav/
+  script: plugins.webdav.webdav_application.web_dav
+  secure: always
+
+- url: /webdav/.*
+  script: plugins.webdav.webdav_application.web_dav
+  secure: always
+
+- url: /(.+\.(js|css))$
+  script: plugins.code.getfile_app
 
 - url: /.*
   script: argeweb.application.instance
