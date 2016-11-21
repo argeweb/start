@@ -1,4 +1,4 @@
-module: defualt
+module: default
 runtime: python27
 api_version: 1
 threadsafe: yes
@@ -35,88 +35,15 @@ handlers:
   static_files: static/robots.txt
   upload: static/robots.txt
 
-- url: /(.+\.(otf|eot|svg|ttf|woff|woff2))$
-  static_files: \1
-  upload: (.+\.(otf|eot|svg|ttf|woff|woff2))
-  mime_type: application/octet-stream
-  secure: always
-
-- url: /static/(.+\.(less|scss|sass))$
-  static_files: static\1
-  upload: static/(.+\.(less|scss|sass))
-  mime_type: text/css
-  secure: always
-
-- url: /static/(.+\.(json))$
-  static_files: static\1
-  upload: static/(.+\.(json))
-  mime_type: application/json
-  secure: always
-  http_headers:
-    Access-Control-Allow-Origin: "*"
-
-- url: /static/(.+\.(map))$
-  static_files: static\1
-  upload: static/(.+\.(map))
-  mime_type: application/octet-stream
-  secure: always
-  http_headers:
-    Access-Control-Allow-Origin: "*"
-
 - url: /themes/(.*?)/static/(.*)
   static_files: themes/\1/static/\2
   upload: themes/(.*?)/static/(.*)
-  secure: always
-
-- url: /themes/(.*?)/css/(.*)
-  static_files: themes/\1/css/\2
-  upload: themes/(.*?)/css/(.*)
-  secure: always
-
-- url: /themes/(.*?)/js/(.*)
-  static_files: themes/\1/js/\2
-  upload: themes/(.*?)/js/(.*)
-  secure: always
-
-- url: /themes/(.*?)/img/(.*)
-  static_files: themes/\1/img/\2
-  upload: themes/(.*?)/img/(.*)
   secure: always
 
 - url: /plugins/(.*?)/static/(.*)
   static_files: plugins/\1/static/\2
   upload: plugins/(.*?)/static/(.*)
   secure: always
-
-- url: /img
-  static_dir: static/img
-  secure: always
-
-- url: /images
-  static_dir: static/images
-  secure: always
-
-- url: /swf
-  static_dir: static/swf
-  secure: always
-
-- url: /fonts
-  static_dir: static/fonts
-  secure: always
-
-- url: /css
-  static_dir: static/css
-  secure: always
-  mime_type: text/css
-  http_headers:
-    Access-Control-Allow-Origin: "*"
-
-- url: /js
-  static_dir: static/js
-  secure: always
-  mime_type: text/javascript
-  http_headers:
-    Access-Control-Allow-Origin: "*"
 
 - url: /static
   static_dir: static
@@ -135,9 +62,20 @@ handlers:
 #  script: plugins.webdav.webdav_application.web_dav
 #  secure: always
 
-- url: /assets/files/.*
+- url: /webdav
   script: plugins.webdav.webdav_application.web_dav
   secure: always
+
+- url: /webdav/
+  script: plugins.webdav.webdav_application.web_dav
+  secure: always
+
+- url: /webdav/.*
+  script: plugins.webdav.webdav_application.web_dav
+  secure: always
+
+- url: /(.+\.(js|css))$
+  script: plugins.code.getfile_app
 
 - url: /.*
   script: argeweb.application.instance
