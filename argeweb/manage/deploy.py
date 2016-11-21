@@ -75,6 +75,7 @@ class Deploy:
         project_config.update({
             "project_id": (project_id is not None) and project_id or raw_input("Please enter Project id: "),
             "version": (version is not None) and version or raw_input("Please enter version:  "),
+            "ignore": ""
         })
         if options.save:
             j = json.dumps(project_config, indent=4)
