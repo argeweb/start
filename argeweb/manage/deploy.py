@@ -62,23 +62,20 @@ class Deploy:
         try:
             with open(file_project_config , "r+") as f:
                 project_config = json.load(fp=f)
-            if options.project_id is None:
-                project_id = ("project_id" in project_config) and project_config["project_id"] or options.project_id
-            else:
-                project_id = options.project_id
-            if options.version is None:
-                version = ("version" in project_config) and project_config["version"] or options.version
-            else:
-                version = options.version
-            project_config.update({
-                "project_id": (project_id is not None) and project_id or raw_input("Please enter Project id: "),
-                "version": (version is not None) and version or raw_input("Please enter version:  "),
-            })
         except IOError:
-            project_config = {
-                "project_id": raw_input("Please enter Project name: "),
-                "version": raw_input("Please enter version: ")
-            }
+            pass
+        if options.project_id is None:
+            project_id = ("project_id" in project_config) and project_config["project_id"] or options.project_id
+        else:
+            project_id = options.project_id
+        if options.version is None:
+            version = ("version" in project_config) and project_config["version"] or options.version
+        else:
+            version = options.version
+        project_config.update({
+            "project_id": (project_id is not None) and project_id or raw_input("Please enter Project id: "),
+            "version": (version is not None) and version or raw_input("Please enter version:  "),
+        })
         if options.save:
             j = json.dumps(project_config, indent=4)
             with open(file_project_config, "w") as f:
