@@ -25,6 +25,7 @@
     "backend_ui_material": "argeweb/plugin-backend-ui-material",
     "plugin_manager": "argeweb/plugin-plugin-manager",
     "themes": "argeweb/plugin-themes",
+    "file": "argeweb/plugin-file",
     "user_file": "argeweb/plugin-user-file"
   }
 }

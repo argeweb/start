@@ -56,15 +56,14 @@ ArGeWeb 是個基於 [ferris-framework](https://ferris-framework.appspot.com) �
     set /p project= Enter Project Name:
     git clone https://github.com/argeweb/start.git %project%
     cd %project%
-    cd argeweb\manage
-    update.py
-    run.py
-    open.py
+    manage.py update
+    manage.py run
+    manage.py open
 
 # 佈署到 Google App Engine
 佈署到 Google App Engine 上，使用 argeweb/manage/deploy.py，或是
 
-    manage.py update
+    manage.py deploy -A project_id -V version
 
 這將會在 argeweb/manage 下建一個 project.json 的設定檔，若你需要佈署不同版本時，你也可以使用下面方式來建立其它設定，
     
@@ -80,11 +79,9 @@ ArGeWeb 是個基於 [ferris-framework](https://ferris-framework.appspot.com) �
 
     "backend_ui_material": "argeweb/plugin-backend-ui-material",
     "plugin_manager": "argeweb/plugin-plugin-manager",
-
-這2個組件還另外依賴了
-
     "application_user": "argeweb/plugin-application-user",
     "user_file": "argeweb/plugin-user-file",
+    "file": "argeweb/plugin-file",
     
 目前預設使用的前端元件有
 
