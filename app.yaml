@@ -35,14 +35,15 @@ handlers:
   static_files: static/robots.txt
   upload: static/robots.txt
 
-- url: /themes/(.*?)/static/(.*)
-  static_files: themes/\1/static/\2
-  upload: themes/(.*?)/static/(.*)
-  secure: always
+- url: /assets/(themes|plugins)/(.*?)/static/(.+\.(js|css))$
+  script: plugins.code.getcode
 
-- url: /plugins/(.*?)/static/(.*)
-  static_files: plugins/\1/static/\2
-  upload: plugins/(.*?)/static/(.*)
+- url: /assets/(themes|plugins)/(.*?)/static/(.+\.(gif|jpg|jpeg|png|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))$
+  script: plugins.file.getfile
+
+- url: /(themes|plugins)/(.*?)/static/(.*)
+  static_files: \1/\2/static/\3
+  upload: (.*?)/(.*?)/static/(.*)
   secure: always
 
 - url: /static
@@ -75,7 +76,10 @@ handlers:
   secure: always
 
 - url: /(.+\.(js|css))$
-  script: plugins.code.getfile_app
+  script: plugins.code.getcode
+
+- url: /(.+\.(gif|jpg|jpeg|png|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))$
+  script: plugins.file.getfile
 
 - url: /.*
   script: argeweb.application.instance
