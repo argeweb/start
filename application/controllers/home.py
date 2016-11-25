@@ -26,7 +26,7 @@ class Home(Controller):
         self.meta.view.template_name = [u"assets:/themes/%s/index.html?r=%s" % (self.theme, str(random.random())), u"/index.html"]
         if self.theme == "default":
             index_path = u"/%s.html" % self.params.get_string("hl", u"index").lower().replace("-", "")
-            self.meta.view.template_name = [u"assets:/themes/%s/index.html?r=%s" % (self.theme, str(random.random())), index_path]
+            self.meta.view.template_name = [u"assets:/themes/%s/%s?r=%s" % (self.theme, index_path, str(random.random())), index_path]
             self.context["server_name"] = self.server_name
             self.context["namespace"] = self.namespace
             self.context["information"] = self.host_information
