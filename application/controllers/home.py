@@ -5,7 +5,6 @@
 # Author: Qi-Liang Wen (温啓良）
 # Web: http://www.yooliang.com/
 # Date: 2015/3/3
-from argeweb import ndb
 from argeweb import add_authorizations
 from argeweb import Controller, route_with, scaffold, BasicModel, route_menu, route
 from argeweb import Pagination
@@ -17,31 +16,35 @@ class Home(Controller):
     class Meta:
         title = u"前台"
         components = (scaffold.Scaffolding, Pagination, Search)
-        pagination_limit = 10
 
     @route_with('/')
     @route_with('/index.html')
     def index(self):
-        # 從 實體檔案 讀取樣版 (template, themes 相關目錄)
-        self.meta.view.template_name = [u"assets:/themes/%s/index.html?r=%s" % (self.theme, str(random.random())), u"/index.html"]
-        if self.theme == "default":
-            index_path = u"/%s.html" % self.params.get_string("hl", u"index").lower().replace("-", "")
-            self.meta.view.template_name = [u"assets:/themes/%s/%s?r=%s" % (self.theme, index_path, str(random.random())), index_path]
-            self.context["server_name"] = self.server_name
-            self.context["namespace"] = self.namespace
-            self.context["information"] = self.host_information
+        # 取消樣版系統的快取
+        self.meta.view.cache = False
 
-    @route_with(template='/docs/<:(.*)>.html')
-    def doc_path(self, path):
-        self.meta.view.theme = "prettydocs"
-        self.meta.view.template_name = u"/" + path + u".html"
-        self.context["docs_name"] = "ArGeWeb"
+        # 先從 Datastore 讀取樣版, 再從 實體檔案 讀取樣版 (template, themes 相關目錄)
+        self.meta.view.template_name = [u"assets:/themes/%s/index.html" % self.theme, u"/index.html"]
+        if self.theme == "default":
+            # 若有語系參數的話 ( hl )
+            index_path = u"%s.html" % self.params.get_string("hl", u"index").lower().replace("-", "")
+            self.meta.view.template_name = [u"assets:/themes/%s/%s" % (self.theme, index_path), index_path]
+        self.context["information"] = self.host_information
 
     @route_with(template='/<:(.*)>.html')
     def all_path(self, path):
-        # 從 實體檔案 讀取樣版 (template, themes 相關目錄)
-        self.meta.view.template_name = [u"assets:/themes/%s/%s.html?%s" % (self.theme, path, str(random.random())), u"/" + path + u".html"]
+        # 取消樣版系統的快取
+        self.meta.view.cache = False
 
-        # 從 Datastore 讀取樣版
-        #self.meta.view.template_name = u"assets:/" + path + u".html?r=" + str(random.random())
+        self.context["information"] = self.host_information
+        # 先從 Datastore 讀取樣版, 再從 實體檔案 讀取樣版 (template, themes 相關目錄)
+        self.meta.view.template_name = [
+            u"assets:/themes/%s/%s.html" % (self.theme, path), u"/" + path + u".html"]
+
+    @route_with(template='/docs/<:(.*)>.html')
+    def doc_path(self, path):
+        # ArgeWeb 說明文件使用
+        self.meta.view.theme = "prettydocs"
+        self.meta.view.template_name = u"/" + path + u".html"
+        self.context["docs_name"] = "ArGeWeb"
 

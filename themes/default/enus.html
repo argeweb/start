@@ -80,10 +80,9 @@
             <h2 class="title text-center">About</h2>
             <p class="intro">
                 <strong>The ArGeWeb Framework has been successfully running on this server</strong><br><br>
-                Server Name : {{ server_name }}<br>
-                Datastore Namespace : {{ namespace }}<br><br>
-                Theme Name : {{ information.theme }} <br>
-                Theme Path : /themes/{{ information.theme }} <br> <br>
+                Server Name : <span id="server_name"></span><br>
+                Datastore Namespace : <span id="namespace"></span><br><br>
+                Theme Name : <span id="theme"></span><br><br><br>
                 This style is argeweb's default theme style, (Designed with  by <a href="http://themes.3rdwavemedia.com/" target="_blank"> Xiaoying Riley</a> for developers)
             </p>
         </div>
@@ -237,7 +236,7 @@
         </div>
     </footer>
     <script type="text/javascript" src="/static/components/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="/themes/default/static/plugins/jquery.easing.1.3.js"></script>
+    <script type="text/javascript" src="/static/components/jquery.easing/js/jquery.easing.min.js"></script>
     <script type="text/javascript" src="/static/components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/themes/default/static/plugins/jquery-scrollTo/jquery.scrollTo.min.js"></script>
     <script type="text/javascript" src="/themes/default/static/js/main.js"></script>

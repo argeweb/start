@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<!--[if IE 8]> <html lang="zhtw" class="ie8"> <![endif]-->  
-<!--[if IE 9]> <html lang="zhtw" class="ie9"> <![endif]-->  
-<!--[if !IE]><!--> <html lang="zhtw"> <!--<![endif]-->  
+<!--[if IE 8]> <html lang="zhtw" class="ie8"> <![endif]-->
+<!--[if IE 9]> <html lang="zhtw" class="ie9"> <![endif]-->
+<!--[if !IE]><!--> <html lang="zhtw"> <!--<![endif]-->
 <head>
     <title>ArGeWeb Framework</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <meta name="author" content="">    
-    <link rel="shortcut icon" href="favicon.ico">  
+    <meta name="author" content="">
+    <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" type="text/css" href='//fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic'>
     <link rel="stylesheet" type="text/css" href='//fonts.googleapis.com/css?family=Montserrat:400,700'>
     <link rel="stylesheet" type="text/css" href="/static/components/bootstrap/dist/css/bootstrap.min.css">
@@ -19,7 +19,7 @@
 
 <body data-spy="scroll">
     <header id="header" class="header">
-        <div class="container">            
+        <div class="container">
             <h1 class="logo pull-left">
                 <a class="scrollto" href="#promo">
                     <span class="logo-title">ArGeWeb</span>
@@ -48,7 +48,7 @@
             </nav>
         </div>
     </header>
-    
+
     <section id="promo" class="promo section offset-header">
         <div class="container text-center">
             <h2 class="title">ArGe<span class="highlight">Web</span></h2>
@@ -73,17 +73,16 @@
             </div>
         </div>
     </section>
-    
-    <!-- ******ABOUT****** --> 
+
+    <!-- ******ABOUT****** -->
     <section id="about" class="about section" style="padding-bottom: 0px">
         <div class="container">
             <h2 class="title text-center">About</h2>
             <p class="intro">
                 <strong>ArGeWeb Framework 已經成功的運行在這個伺服器上了</strong><br><br>
-                伺服器識別名稱 : {{ server_name }}<br>
-                資料儲存空間 : {{ namespace }}<br><br>
-                佈景主題名稱 : {{ information.theme }} <br>
-                佈景主題路徑 : /themes/{{ information.theme }} <br> <br>
+                伺服器識別名稱 : <span id="server_name"></span><br>
+                資料儲存空間 : <span id="namespace"></span><br>
+                佈景主題名稱 : <span id="theme"></span><br><br>
                 此樣式為 argeweb 預設樣式, (由 <a href="http://themes.3rdwavemedia.com/" target="_blank"> Xiaoying Riley</a> 設計提供給開發者)
             </p>
         </div>
@@ -123,7 +122,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="clearfix visible-md"></div>    
+                <div class="clearfix visible-md"></div>
                 <div class="item col-md-4 col-sm-6 col-xs-12">
                     <div class="icon-holder">
                         <i class="fa fa-cubes"></i>
@@ -132,7 +131,7 @@
                         <h3 class="sub-title">plugin_manager</h3>
                         <p>可讓使用者自已決定是否啟用套件.</p>
                     </div>
-                </div>                
+                </div>
                 <div class="item col-md-4 col-sm-6 col-xs-12">
                     <div class="icon-holder">
                         <i class="fa fa-code"></i>
@@ -150,7 +149,7 @@
                         <h3 class="sub-title">more...</h3>
                         <p>在我們的 Github 上, 你還可以找到更多的組件 <a href="https://github.com/argeweb">https://github.com/argeweb</a>, 像是 banner news product ...</p>
                     </div>
-                </div>               
+                </div>
             </div>
         </div>
     </section>
@@ -196,12 +195,12 @@
             </div>
         </div>
     </section>
-    
+
     <section id="contact" class="contact section has-pattern">
         <div class="container">
             <div class="contact-inner">
                 <h2 class="title  text-center">Contact</h2>
-                <div class="author-message">                      
+                <div class="author-message">
                     <div class="profile">
                         <img class="img-responsive" src="https://avatars2.githubusercontent.com/u/1297630?v=3&s=466" alt="" />
                     </div><!--//profile-->
@@ -237,7 +236,7 @@
         </div>
     </footer>
     <script type="text/javascript" src="/static/components/jquery/dist/jquery.min.js"></script>
-    <script type="text/javascript" src="/themes/default/static/plugins/jquery.easing.1.3.js"></script>
+    <script type="text/javascript" src="/static/components/jquery.easing/js/jquery.easing.min.js"></script>
     <script type="text/javascript" src="/static/components/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/themes/default/static/plugins/jquery-scrollTo/jquery.scrollTo.min.js"></script>
     <script type="text/javascript" src="/themes/default/static/js/main.js"></script>
