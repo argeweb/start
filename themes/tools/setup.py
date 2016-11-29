@@ -17,6 +17,10 @@ sys.argv.append('py2exe')
 setup(
     options={'py2exe': dict(bundle_files=1, optimize=2)},
     console=["upload.py"],
+    includes=["OpenSSL", "certifi"],
+    zipfile=None,
     data_files=["cacert.pem"],
-    zipfile=None
+    ascii=True,
+    dll_excludes=['msvcr71.dll'],
+    compressed=True,
 )
