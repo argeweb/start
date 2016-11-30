@@ -103,7 +103,7 @@ usage = "usage: %prog theme_name [options]"
 parser = OptionParser(usage=usage)
 parser.add_option("-n", "--name",
                   action="store", dest="theme_name",
-                  help="theme_name that you want to upload [default]")
+                  help="theme_name that you want to upload")
 parser.add_option("-s", "--server",
                   action="store", dest="server",
                   help="server that you want to upload to")
@@ -130,15 +130,18 @@ if len(paths) == 1:
     else:
         paths = file_path.split("\\")
 script_path = file_path
-if paths[-2] == "manage" and paths[-3] == "argeweb":
+if "manage" in paths and "argeweb" in paths:
     manager_dir = script_path
     if options.theme_name is None:
         if len(args) == 0:
-            options.theme_name = raw_input("Please enter theme name: ")
+            options.theme_name = raw_input(" Please enter theme name: ")
         elif len(args) == 1:
             options.theme_name = args[0]
         else:
             print u"error args"
+            sys.exit()
+        if options.theme_name is "" or options.theme_name is u"":
+            print u"error need theme name"
             sys.exit()
     themes_dir = os.path.join(manager_dir, "..", "..", 'themes', options.theme_name)
 else:
@@ -153,10 +156,10 @@ temp_config = None
 try:
     with open(file_theme_config, "r+") as f:
         theme_config = json.load(fp=f)
-        tmp_host = ("host" in theme_config) and theme_config["host"] or options.server
-        tmp_acc = ("account" in theme_config) and theme_config["account"] or options.account
+        tmp_host = options.server is not None and options.server or theme_config["host"]
+        tmp_acc = options.account is not None and options.account or theme_config["account"]
         theme_config.update({
-            "host": (tmp_host is not None) and tmp_host or raw_input(" server host: "),
+            "host": (tmp_host is not None) and tmp_host or raw_input(" server  : "),
             "account": (tmp_acc is not None) and tmp_acc or raw_input(" account : "),
         })
 except:
@@ -192,6 +195,7 @@ r = requests_session.post("%s/admin/login.json" % (theme_config["host"]), data={
 })
 rn = json.loads(r.text)
 if rn["is_login"] == "false":
+    print r.text
     print " login   : account error"
     sys.exit()
 else:
