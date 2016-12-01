@@ -26,6 +26,7 @@
     "plugin_manager": "argeweb/plugin-plugin-manager",
     "themes": "argeweb/plugin-themes",
     "file": "argeweb/plugin-file",
+    "code": "argeweb/plugin-code",
     "user_file": "argeweb/plugin-user-file"
   }
 }
