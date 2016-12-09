@@ -102,9 +102,9 @@ skip_files:
 - ^(.*/)?.*\.py[co]$
 - ^(.*/)?.*/RCS/.*$
 - ^(.*/)?.*/gae_config/.*$
-- ^(.*/)?.*/static/components/.*$
-- ^(.*/)?.*/static/node_modules/.*$
-- ^(.*/)?.*/argeweb/manage/.*$
+- ^(.*/)?.*static/bower_components/.*$
+- ^(.*/)?.*static/node_modules/.*$
+- ^(.*/)?.*argeweb/manage/.*$
 - ^(.*/)?.*/.git/.*$
 - ^(.*/)?\..*$
 - ^(.*/)?.*\.php$
