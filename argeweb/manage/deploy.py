@@ -53,11 +53,11 @@ class Deploy:
 
         (options, args) = parser.parse_args()
         
-        project_config_file = "project"
+        project_config_file = "default"
         if len(sys.argv) == 2:
             project_config_file = sys.argv[1]
         dir_web = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-        file_project_config = os.path.join(dir_web, "%s.json" % project_config_file)
+        file_project_config = os.path.join(dir_web, "project_%s.json" % project_config_file)
         project_config = {}
         try:
             with open(file_project_config , "r+") as f:
@@ -88,7 +88,6 @@ class Deploy:
         if "ignore" in project_config and project_config["ignore"].find("themes") >= 0:
             project_config["ignore"] = "\n- ^themes/.*$"
         os.chdir(dir_web)
-        print project_config["version"]
         self.deploy(project_config["project_id"], project_config["version"], project_config["ignore"])
 
 if __name__ == "__main__":

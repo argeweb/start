@@ -17,7 +17,6 @@
   "dependencies": {
     "bootstrap": "^3.3.7",
     "jquery": "~2.1.4",
-    "jquery-ui": "1.10.4",
     "jquery.steps": "jquery-steps#^1.1.0",
     "jquery-validation": "^1.15.1",
     "jquery-pjax": "^1.9.6",

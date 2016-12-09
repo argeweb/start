@@ -87,7 +87,6 @@ ArGeWeb 是個基於 [ferris-framework](https://ferris-framework.appspot.com) �
 
     "bootstrap": "^3.3.7",
     "jquery": "^2.1.4",
-    "jquery-ui": "1.10.4",
     "jquery.steps": "jquery-steps#^1.1.0",
     "jquery-validation": "^1.15.1",
     "sweetalert2": "^4.1.9",

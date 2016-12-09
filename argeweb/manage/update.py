@@ -15,10 +15,13 @@ def main():
     if len(sys.argv) == 1:
         dir = os.path.join(base_dir, "argeweb")
         os.chdir(dir)
-        run ("bower update -f")
+        run("bower update -f")
+
         target_dir = os.path.join(base_dir, "plugins")
         os.chdir(target_dir)
         run("bower update")
+        run("bower list --paths --json > bower_path.json")
+
         target_dir = os.path.join(base_dir, "static")
         os.chdir(target_dir)
         run("bower update")
