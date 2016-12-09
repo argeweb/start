@@ -7,14 +7,27 @@ module.exports = function (grunt) {
             var pathname = root + '/' + file
                 , stat = fs.lstatSync(pathname);
             if (stat.isDirectory()) {
-                res.push({expand: true, cwd: 'components/' + file, src: ['**/*.min.css'], dest: 'vendor/' + file, flatten: true, filter: 'isFile'});
-                res.push({expand: true, cwd: 'components/' + file, src: ['**/*.min.js', '**/*.min.js.map'], dest: 'vendor/' + file, flatten: true, filter: 'isFile'});
-                res.push({expand: true, src: ['components/' + file + '**/fonts/**'], dest: 'vendor/' + file, flatten: true, filter: 'isFile'});
+                res.push({expand: true, cwd: 'bower_components/' + file, src: [
+                    '**/jquery.steps.css',
+                    '**/codemirror.css'
+                ], dest: 'vendor/' + file, flatten: true, filter: 'isFile'});
+                res.push({expand: true, cwd: 'bower_components/' + file, src: [
+                    '**/brace-fold.js',
+                    '**/codemirror.js',
+                    '**/css.js',
+                    '**/htmlmixed.js',
+                    '**/javascript.js',
+                    '**/message*.js',
+                    '**/keymaster.js',
+                    '**/*.min.js',
+                    '**/*.min.js.map'
+                ], dest: 'vendor/' + file, flatten: true, filter: 'isFile'});
+                res.push({expand: true, src: ['bower_components/' + file + '**/fonts/**'], dest: 'vendor/fonts', flatten: true, filter: 'isFile'});
             }
         });
         return res
     }
-    var files_rule = getAllFiles(__dirname+"/components");
+    var files_rule = getAllFiles(__dirname+"/bower_components");
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
