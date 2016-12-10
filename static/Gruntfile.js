@@ -9,7 +9,9 @@ module.exports = function (grunt) {
             if (stat.isDirectory()) {
                 res.push({expand: true, cwd: 'bower_components/' + file, src: [
                     '**/jquery.steps.css',
-                    '**/codemirror.css'
+                    '**/codemirror.css',
+                    '**/prism*.css',
+                    '**/*.min.css'
                 ], dest: 'vendor/' + file, flatten: true, filter: 'isFile'});
                 res.push({expand: true, cwd: 'bower_components/' + file, src: [
                     '**/brace-fold.js',
@@ -19,6 +21,7 @@ module.exports = function (grunt) {
                     '**/javascript.js',
                     '**/message*.js',
                     '**/keymaster.js',
+                    '**/prism*.js',
                     '**/*.min.js',
                     '**/*.min.js.map'
                 ], dest: 'vendor/' + file, flatten: true, filter: 'isFile'});
