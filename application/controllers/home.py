@@ -5,11 +5,12 @@
 # Author: Qi-Liang Wen (温啓良）
 # Web: http://www.yooliang.com/
 # Date: 2015/3/3
-from argeweb import add_authorizations
+from argeweb import auth, add_authorizations
 from argeweb import Controller, route_with, scaffold, BasicModel, route_menu, route
 from argeweb import Pagination
 from argeweb.components.search import Search
 import random
+from plugins.pretty_docs import get_pretty_docs_page
 
 
 class Home(Controller):
@@ -31,6 +32,16 @@ class Home(Controller):
             self.meta.view.template_name = [u"assets:/themes/%s/%s" % (self.theme, index_path), index_path]
         self.context["information"] = self.host_information
 
+    @add_authorizations(auth.check_user)
+    @route_with(template='/docs/<:(.*)>.html')
+    def doc_path(self, path):
+        # ArgeWeb 說明文件使用
+        self.context["config"], self.context["page"], self.context["list"], self.meta.view.template_name = \
+            get_pretty_docs_page(self.namespace, path)
+        self.meta.view.theme = self.context["config"].theme
+        if self.application_user and self.application_user_level >= 999:
+            self.context["editable"] = "editable"
+
     @route_with(template='/<:(.*)>.html')
     def all_path(self, path):
         # 取消樣版系統的快取
@@ -40,11 +51,3 @@ class Home(Controller):
         # 先從 Datastore 讀取樣版, 再從 實體檔案 讀取樣版 (template, themes 相關目錄)
         self.meta.view.template_name = [
             u"assets:/themes/%s/%s.html" % (self.theme, path), u"/" + path + u".html"]
-
-    @route_with(template='/docs/<:(.*)>.html')
-    def doc_path(self, path):
-        # ArgeWeb 說明文件使用
-        self.meta.view.theme = "prettydocs"
-        self.meta.view.template_name = u"/" + path + u".html"
-        self.context["docs_name"] = "ArGeWeb"
-

@@ -28,7 +28,7 @@ def check_file_with_server_files(path, path_prue, files_on_server, check_md5):
     for item in files_on_server:
         if u"/" + item["path"] == u"%s" % path and item["md5"] == u"%s" % check_md5:
             return False
-    print " upload: " + check_md5 + "  " + path_prue
+    print " upload  : " + check_md5 + "  " + path_prue
     return True
 
 
