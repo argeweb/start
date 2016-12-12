@@ -22,11 +22,13 @@
   ],
   "dependencies": {
     "application_user": "argeweb/plugin-application-user",
+    "banner": "argeweb/plugin-banner",
     "backend_ui_material": "argeweb/plugin-backend-ui-material",
+    "code": "argeweb/plugin-code",
+    "file": "argeweb/plugin-file",
     "plugin_manager": "argeweb/plugin-plugin-manager",
     "themes": "argeweb/plugin-themes",
-    "file": "argeweb/plugin-file",
-    "code": "argeweb/plugin-code",
-    "user_file": "argeweb/plugin-user-file"
+    "user_file": "argeweb/plugin-user-file",
+    "zz_last_path": "argeweb/plugin-zz-last-path"
   }
 }
