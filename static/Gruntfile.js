@@ -21,7 +21,8 @@ module.exports = function (grunt) {
     var css_rule = [
         '**/jquery.steps.css',
         '**/codemirror.css',
-        '**/*.min.css'
+        '**/*.min.css',
+        '**/*.min.css.map'
     ];
     var js_rule = [
         '**/brace-fold.js',
@@ -31,6 +32,7 @@ module.exports = function (grunt) {
         '**/javascript.js',
         '**/message*.js',
         '**/keymaster.js',
+        '**/jquery.min.map',
         '**/*.min.js',
         '**/*.min.js.map'
     ];
