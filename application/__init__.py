@@ -8,6 +8,6 @@
 from authorizations import require_member, application_authorizations
 
 __all__ = (
-    "require_member",
-    "application_authorizations"
+    'require_member',
+    'application_authorizations'
 )

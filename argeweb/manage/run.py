@@ -13,5 +13,5 @@ def main():
     run("start chrome http://127.0.0.1:8080")
     run("dev_appserver.py . --host=127.0.0.1")
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

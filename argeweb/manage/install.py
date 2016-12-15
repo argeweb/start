@@ -15,7 +15,7 @@ def main():
         plugin = raw_input("Please enter plugin name: ")
         if plugin.find("=") < 0:
             if plugin.startswith("argeweb/plugin-") is True:
-                plugin = "_".join(plugin.split("-")[1:]) + "=" + plugin
+                plugin = '_'.join(plugin.split("-")[1:]) + "=" + plugin
                 argv.append(plugin)
             else:
                 argv.append(plugin)
@@ -26,10 +26,10 @@ def main():
                 continue
             if n == 1 and arg.find("=") < 0:
                 if arg.startswith("argeweb/plugin-") is True:
-                    arg = "_".join(arg.split("-")[1:]) + "=" + arg
+                    arg = '_'.join(arg.split("-")[1:]) + "=" + arg
             if (n == 1 and len(sys.argv) == 2) or (n == 1 and len(sys.argv) == 3 and str(sys.argv[2]) == "-S"):
                 print n, len(sys.argv)
-                if arg.find("/") < 0 and arg.find("=") < 0 and arg.find("argeweb") < 0:
+                if arg.find("/") < 0 and arg.find("=") < 0 and arg.find('argeweb') < 0:
                     arg = arg + "=argeweb/plugin-" + arg
             argv.append(arg)
 
@@ -38,5 +38,5 @@ def main():
     run("bower install " + " ".join(argv))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
