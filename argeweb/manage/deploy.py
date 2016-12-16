@@ -17,39 +17,39 @@ class Deploy:
         print str_command
         os.system(str_command)
 
-    def deploy(self, project_id="argeweb-framework", project_version='2016', ignore=""):
-        dir_web = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..",  "..")
+    def deploy(self, project_id='argeweb-framework', project_version='2016', ignore=''):
+        dir_web = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..',  '..')
         os.chdir(dir_web)
-        temp_file = open(os.path.join(dir_web, "temp_deploy.yaml"), 'w+')
-        app_file = open(os.path.join(dir_web, "app.yaml"))
+        temp_file = open(os.path.join(dir_web, 'temp_deploy.yaml'), 'w+')
+        app_file = open(os.path.join(dir_web, 'app.yaml'))
         # temp_file.write("version: %s\n" % project_version)
         for line in app_file:
             if line.find('ssl') > 0:
-                temp_file.write("- name: ssl\n  version: latest\n")
+                temp_file.write('- name: ssl\n  version: latest\n')
             else:
                 temp_file.write(line)
         temp_file.write(ignore)
         app_file.close()
         temp_file.close()
         # run ("gcloud app deploy app.yaml --project argeweb-framework")
-        self.run("appcfg.py update temp_deploy.yaml -A %s -V %s" %(project_id, project_version))
-        self.run("appcfg.py update_indexes . -A %s -V %s" %(project_id, project_version))
+        self.run('appcfg.py update temp_deploy.yaml -A %s -V %s' %(project_id, project_version))
+        self.run('appcfg.py update_indexes . -A %s -V %s' %(project_id, project_version))
 
-        os.remove(os.path.join(dir_web, "temp_deploy.yaml"))
+        os.remove(os.path.join(dir_web, 'temp_deploy.yaml'))
 
     def __init__(self):
         usage = "usage: %prog theme_name [options]"
         parser = OptionParser(usage=usage)
-        parser.add_option("-A", "--project_id",
+        parser.add_option('-A', '--project_id',
                           action='store', dest='project_id',
                           default=None,
-                          help="project_id that you want to upload")
-        parser.add_option("-V", "--version",
+                          help='project_id that you want to upload')
+        parser.add_option('-V', '--version',
                           default=None,
                           action='store', dest='version',
-                          help="version that you want to upload")
-        parser.add_option("--save", action='store_true', dest='save', default=False,
-                          help="save info into .json")
+                          help='version that you want to upload')
+        parser.add_option('--save', action='store_true', dest='save', default=False,
+                          help='save info into .json')
 
         (options, args) = parser.parse_args()
         
@@ -57,7 +57,7 @@ class Deploy:
         if len(sys.argv) == 2:
             project_config_file = sys.argv[1]
         dir_web = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-        file_project_config = os.path.join(dir_web, "project_%s.json" % project_config_file)
+        file_project_config = os.path.join(dir_web, 'project_%s.json' % project_config_file)
         project_config = {}
         try:
             with open(file_project_config , "r+") as f:
@@ -73,18 +73,18 @@ class Deploy:
         else:
             version = options.version
         project_config.update({
-            'project_id': (project_id is not None) and project_id or raw_input("Please enter Project id: "),
-            'version': (version is not None) and version or raw_input("Please enter version:  "),
-            'ignore': ""
+            'project_id': (project_id is not None) and project_id or raw_input('Please enter Project id: '),
+            'version': (version is not None) and version or raw_input('Please enter version:  '),
+            'ignore': ''
         })
         if options.save:
             j = json.dumps(project_config, indent=4)
             with open(file_project_config, 'w') as f:
                 f.write(j)
-                print "config file is save"
+                print 'config file is save'
         if project_config['version'] == 'date_today':
             import datetime
-            project_config['version'] = datetime.datetime.today().strftime("%Y%m%d")
+            project_config['version'] = datetime.datetime.today().strftime('%Y%m%d')
         if 'ignore' in project_config and project_config['ignore'].find('themes') >= 0:
             project_config['ignore'] = "\n- ^themes/.*$"
         os.chdir(dir_web)

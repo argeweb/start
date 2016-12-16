@@ -30,7 +30,7 @@ def require_member(controller):
     controller.mobile = mobile
     controller.application_user = application_user
     controller.application_user_level = role.level
-    controller.prohibited_actions = str(role.prohibited_actions).split(",")
+    controller.prohibited_actions = str(role.prohibited_actions).split(',')
     controller.context['application_user_level'] = controller.application_user_level
     controller.context['application_user_key'] = application_user.key
     controller.session['application_user_key'] = application_user.key
