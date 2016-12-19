@@ -17,10 +17,10 @@ def main():
         os.chdir(dir)
         run('bower update -f')
 
-        target_dir = os.path.join(base_dir, 'plugins')
-        os.chdir(target_dir)
-        run('bower update')
-        run('bower list --paths --json > bower_path.json')
+        # target_dir = os.path.join(base_dir, 'plugins')
+        # os.chdir(target_dir)
+        # run('bower update')
+        # run('bower list --paths --json > bower_path.json')
 
         target_dir = os.path.join(base_dir, 'static')
         os.chdir(target_dir)
