@@ -35,6 +35,26 @@ module.exports = function (grunt) {
         return res
     }
 
+    function getPluginsFilesRule(css_rule, js_rule) {
+        var root = __dirname + '/../plugins';
+        var res = [], files = fs.readdirSync(root);
+        files.forEach(function (file) {
+            var pathname = root + '/' + file
+                , stat = fs.lstatSync(pathname);
+            if (stat.isDirectory()) {
+                if (css_rule.length > 0){
+                    res.push({expand: true, cwd: pathname, src: css_rule, dest: pathname, filter: 'isFile', ext: '.min.css'});
+                }
+                if (js_rule.length > 0){
+                    if (file.indexOf('node_modules') < 0){
+                        res.push({expand: true, cwd: pathname, src: js_rule, dest: pathname, filter: 'isFile', ext: '.min.js'});
+                    }
+                }
+            }
+        });
+        return res
+    }
+
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         copy: {
@@ -44,7 +64,6 @@ module.exports = function (grunt) {
                         '**/*.min.css',
                         '**/*.min.css.map'
                     ], [
-                        '**/jquery.blueimp-gallery.min.js',
                         '**/jquery.min.map',
                         '**/*.min.js',
                         '**/*.min.js.map'
@@ -77,6 +96,18 @@ module.exports = function (grunt) {
                         '!*.min.js'
                     ]
                     , true, false, true)
+            },
+            plugins: {
+                options: {
+                    sourceMap: true,
+                    sourceMapIncludeSources: true
+                },
+                files: getPluginsFilesRule([],
+                    [
+                        '**/*.js',
+                        '!*.min.js',
+                        '!node_modules/**'
+                    ])
             }
         },
         cssmin: {
@@ -88,13 +119,21 @@ module.exports = function (grunt) {
                         '!*.min.css'
                     ], [], false, true, true
                 )
+            },
+            plugins: {
+                files: getPluginsFilesRule(
+                    [
+                        '**/*.css',
+                        '!*.min.css'
+                    ], []
+                )
             }
         }
     });
 
-    grunt.registerTask('c', ['copy:main']);
     grunt.registerTask('prism', ['copy:prism']);
     grunt.registerTask('js', ['uglify:main']);
     grunt.registerTask('css', ['cssmin:minify']);
-    grunt.registerTask('default', ['uglify:main', 'cssmin:minify', 'copy:main']);
+    grunt.registerTask('vendor', ['uglify:main', 'cssmin:minify', 'copy:main']);
+    grunt.registerTask('default', ['uglify:plugins', 'cssmin:plugins']);
 };
