@@ -32,6 +32,7 @@
     "font-awesome": "^4.7.0",
     "prism": "^1.5.1",
     "blueimp-gallery": "^2.22.0",
-    "summernote": "^0.8.2"
+    "summernote": "^0.8.2",
+    "instantclick": "^3.1.0"
   }
 }
