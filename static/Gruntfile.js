@@ -1,4 +1,5 @@
 module.exports = function (grunt) {
+    grunt.loadNpmTasks('grunt-rename');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
@@ -58,7 +59,7 @@ module.exports = function (grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
         copy: {
-            main: {
+            vendor: {
                 files: getFilesRule(
                     [
                         '**/*.min.css',
@@ -72,10 +73,31 @@ module.exports = function (grunt) {
             },
             prism: {
                 files: getFilesRule(['**/prism*.css'], ['**/prism*.js'], false, false, true)
+            },
+            material: {
+                files: getPluginsFilesRule(
+                    [], [
+                        '**/material.js'
+                    ]
+                )
+            }
+        },
+        rename: {
+            pjax: {
+                src: 'vendor/jquery-pjax/jquery.min.js',
+                dest: 'vendor/jquery-pjax/jquery.pjax.min.js'
+            },
+            pjax_map: {
+                src: 'vendor/jquery-pjax/jquery.min.js.map',
+                dest: 'vendor/jquery-pjax/jquery.pjax.min.js.map'
+            },
+            steps: {
+                src: 'vendor/jquery.steps/jquery.min.css',
+                dest: 'vendor/jquery.steps/jquery.steps.min.css'
             }
         },
         uglify: {
-            main: {
+            vendor: {
                 options: {
                     // 設定壓縮後檔頭要插入的註解
                     banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
@@ -88,6 +110,7 @@ module.exports = function (grunt) {
                         '**/brace-fold.js',
                         '**/codemirror.js',
                         '**/mode/css/css.js',
+                        '**/jquery.pjax.js',
                         '**/mode/htmlmixed/htmlmixed.js',
                         '**/mode/javascript/javascript.js',
                         '**/message*.js',
@@ -111,10 +134,10 @@ module.exports = function (grunt) {
             }
         },
         cssmin: {
-            minify: {
+            vendor: {
                 files: getFilesRule(
                     [
-                        '**/jquery.steps.css',
+                        '**/demo/css/jquery.steps.css',
                         '**/codemirror.css',
                         '!*.min.css'
                     ], [], false, true, true
@@ -131,9 +154,10 @@ module.exports = function (grunt) {
         }
     });
 
+    grunt.registerTask('mt', ['copy:material']);
     grunt.registerTask('prism', ['copy:prism']);
-    grunt.registerTask('js', ['uglify:main']);
-    grunt.registerTask('css', ['cssmin:minify']);
-    grunt.registerTask('vendor', ['uglify:main', 'cssmin:minify', 'copy:main']);
-    grunt.registerTask('default', ['uglify:plugins', 'cssmin:plugins']);
+    grunt.registerTask('js', ['uglify:vendor']);
+    grunt.registerTask('css', ['cssmin:vendor', 'rename:steps']);
+    grunt.registerTask('vendor', ['uglify:vendor', 'cssmin:vendor', 'copy:vendor', 'rename:pjax', 'rename:pjax_map']);
+    grunt.registerTask('default', ['uglify:plugins', 'cssmin:plugins', 'copy:material']);
 };
