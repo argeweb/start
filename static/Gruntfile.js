@@ -100,7 +100,7 @@ module.exports = function (grunt) {
             vendor: {
                 options: {
                     // 設定壓縮後檔頭要插入的註解
-                    banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+                    // banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
                     // 使用 SourceMap 並且將 JS Source 與 Map 檔案放在一起
                     sourceMap: true,
                     sourceMapIncludeSources: true
