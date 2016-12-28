@@ -203,7 +203,12 @@ class Field(object):
         # Run validators
         if not stop_validation:
             chain = itertools.chain(self.validators, extra_validators)
-            stop_validation = self._run_validation_chain(form, chain)
+            try:
+                stop_validation = self._run_validation_chain(form, chain)
+            except Exception as e:
+                if e.args and e.args[0]:
+                    self.errors.append(e.args[0])
+                stop_validation = True
 
         # Call post_validate
         try:

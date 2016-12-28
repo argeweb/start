@@ -255,7 +255,9 @@ class ModelConverter(ModelConverterBase):
         """Returns a form field for a ``ndb.StringProperty``."""
         if prop._repeated:
             return StringListPropertyField(**kwargs)
-        kwargs['validators'].append(validators.length(max=500))
+        if prop._required:
+            kwargs['validators'].append(validators.InputRequired())
+        # kwargs['validators'].append(validators.length(max=500))
         return get_TextField(kwargs)
 
     def convert_BooleanProperty(self, model, prop, kwargs):
