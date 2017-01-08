@@ -41,7 +41,7 @@ def upload_code_file(root_path, file_name, files_on_server):
         need_send = check_file_with_server_files(path, path_without_theme_dir, files_on_server, check_md5)
         if need_send is False:
             return
-        r = requests_session.post('%s/admin/code/upload' % (theme_config['host']), data={
+        r = requests_session.post('%s/admin/code/code/upload' % (theme_config['host']), data={
             'code': content,
             'check_md5': check_md5,
             'path': path
@@ -63,7 +63,7 @@ def upload_file(root_path, file_name, files_on_server):
         if need_send is False:
             return
         files = {'file': (file_name, content)}
-        r = requests_session.post('%s/admin/file/upload' % (theme_config['host']), data={
+        r = requests_session.post('%s/admin/file/file/upload' % (theme_config['host']), data={
             'check_md5': check_md5,
             'path': path
         }, files=files)
@@ -217,7 +217,7 @@ try:
 except IOError:
     pass
 if options.update:
-    r = requests_session.post('%s/admin/themes/upload' % (theme_config['host']), data=theme_information)
+    r = requests_session.post('%s/admin/themes/themes/upload' % (theme_config['host']), data=theme_information)
     print ' update  : theme information is update'
 r = requests_session.post('%s/admin/themes/get_files_md5' % (theme_config['host']), data={'theme': theme_information['theme_name']})
 rn = json.loads(r.text)
