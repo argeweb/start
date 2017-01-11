@@ -145,7 +145,7 @@ if 'manage' in paths and 'argeweb' in paths:
             sys.exit()
     themes_dir = os.path.join(manager_dir, '..', '..', 'themes', options.theme_name)
 else:
-    options.theme_name = paths[-2]
+    options.theme_name = paths[-1]
     manager_dir = script_path
     themes_dir = script_path
 if manager_dir == themes_dir:
