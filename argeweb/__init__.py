@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-version = "0.1.1"
+version = '0.1.1'
 
 import packages
 # from core.gaeforms import model_form
@@ -13,8 +13,8 @@ from argeweb.core import scaffold
 from argeweb.core import auth
 from argeweb.core import events
 from argeweb.core import property as Fields
-from argeweb.core import datastore
-from argeweb.core import function
+from argeweb.core.views import ViewDatastore
+from argeweb.core.views import ViewFunction
 from argeweb.core.ndb import Model, BasicModel, ndb
 from argeweb.components.pagination import Pagination
 from argeweb.components.search import Search
@@ -46,6 +46,6 @@ __all__ = (
     'ndb',
     'route_menu',
     'auth',
-    'datastore',
-    'function'
+    'ViewDatastore',
+    'ViewFunction'
 )
