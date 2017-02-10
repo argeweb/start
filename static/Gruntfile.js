@@ -74,6 +74,9 @@ module.exports = function (grunt) {
             prism: {
                 files: getFilesRule(['**/prism*.css'], ['**/prism*.js'], false, false, true)
             },
+            summernote: {
+                files: getFilesRule(['**/dict/summernote.css'], [], false, false, true)
+            },
             material: {
                 files: getPluginsFilesRule(
                     [], [
@@ -83,6 +86,10 @@ module.exports = function (grunt) {
             }
         },
         rename: {
+            summernote: {
+                src: 'vendor/summernote/summernote.css',
+                dest: 'vendor/summernote/summernote.min.css'
+            },
             pjax: {
                 src: 'vendor/jquery-pjax/jquery.min.js',
                 dest: 'vendor/jquery-pjax/jquery.pjax.min.js'
@@ -157,7 +164,8 @@ module.exports = function (grunt) {
     grunt.registerTask('mt', ['copy:material']);
     grunt.registerTask('prism', ['copy:prism']);
     grunt.registerTask('js', ['uglify:vendor']);
-    grunt.registerTask('css', ['cssmin:vendor', 'rename:steps']);
-    grunt.registerTask('vendor', ['uglify:vendor', 'cssmin:vendor', 'copy:vendor', 'rename:pjax', 'rename:pjax_map']);
+    grunt.registerTask('css', ['cssmin:vendor', 'rename:steps', 'copy:summernote', 'rename:summernote']);
+    //grunt.registerTask('vendor', ['uglify:vendor', 'cssmin:vendor', 'copy:vendor', 'rename:pjax', 'rename:pjax_map']);
+    grunt.registerTask('vendor', ['copy:vendor', 'rename:pjax', 'rename:pjax_map']);
     grunt.registerTask('default', ['uglify:plugins', 'cssmin:plugins', 'copy:material']);
 };
