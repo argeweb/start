@@ -17,7 +17,7 @@ class Deploy:
         print str_command
         os.system(str_command)
 
-    def deploy(self, project_id='argeweb-framework', project_version='2016', ignore=''):
+    def deploy(self, project_id='argeweb-framework', project_version='2016', ignore='', update_indexes=True, update_cron=False):
         dir_web = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..',  '..')
         os.chdir(dir_web)
         temp_file = open(os.path.join(dir_web, 'temp_deploy.yaml'), 'w+')
@@ -33,7 +33,10 @@ class Deploy:
         temp_file.close()
         # run ("gcloud app deploy app.yaml --project argeweb-framework")
         self.run('appcfg.py update temp_deploy.yaml -A %s -V %s' %(project_id, project_version))
-        self.run('appcfg.py update_indexes . -A %s -V %s' %(project_id, project_version))
+        if update_indexes:
+            self.run('appcfg.py update_indexes . -A %s -V %s' %(project_id, project_version))
+        if update_cron:
+            self.run('appcfg.py update_cron  . -A %s -V %s' %(project_id, project_version))
 
         os.remove(os.path.join(dir_web, 'temp_deploy.yaml'))
 
@@ -48,13 +51,17 @@ class Deploy:
                           default=None,
                           action='store', dest='version',
                           help='version that you want to upload')
+        parser.add_option('-I', '--indexes', action='store_true', dest='indexes', default=True,
+                          help='also update indexes (default: True)')
+        parser.add_option('-C', '--cron', action='store_true', dest='cron', default=False,
+                          help='also update cron')
         parser.add_option('--save', action='store_true', dest='save', default=False,
                           help='save info into .json')
 
         (options, args) = parser.parse_args()
         
         project_config_file = 'default'
-        if len(sys.argv) == 2:
+        if len(sys.argv) >= 2:
             project_config_file = sys.argv[1]
         dir_web = os.path.join(os.path.dirname(os.path.abspath(__file__)))
         file_project_config = os.path.join(dir_web, 'project_%s.json' % project_config_file)
@@ -88,7 +95,7 @@ class Deploy:
         if 'ignore' in project_config and project_config['ignore'].find('themes') >= 0:
             project_config['ignore'] = "\n- ^themes/.*$"
         os.chdir(dir_web)
-        self.deploy(project_config['project_id'], project_config['version'], project_config['ignore'])
+        self.deploy(project_config['project_id'], project_config['version'], project_config['ignore'], options.indexes, options.cron)
 
 if __name__ == '__main__':
     Deploy()
