@@ -14,7 +14,7 @@ import random
 
 class Home(Controller):
     class Meta:
-        title = u"前台"
+        title = u'前台'
         components = (scaffold.Scaffolding, Pagination, Search)
 
     @route_with('/')
@@ -24,10 +24,9 @@ class Home(Controller):
         # 取消樣版系統的快取
         self.meta.view.cache = False
         # 先從 Datastore 讀取樣版, 再從 實體檔案 讀取樣版 (template, themes 相關目錄)
-        self.meta.view.template_name = [u"assets:/themes/%s/index.html" % self.theme, u"/index.html"]
-        if self.theme == "default":
+        if self.theme == 'default':
             # 若有語系參數的話 ( hl )
-            index_path = u"%s.html" % self.params.get_string("hl", u"index").lower().replace("-", "")
-            self.meta.view.template_name = [u"assets:/themes/%s/%s" % (self.theme, index_path), index_path]
-        self.context["information"] = self.host_information
+            index_path = u'%s.html' % self.params.get_string('hl', u'index').lower().replace('-', '')
+            self.meta.view.template_name = [u'assets:/themes/%s/%s' % (self.theme, index_path), index_path]
+        self.context['information'] = self.host_information
 
