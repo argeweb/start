@@ -2,8 +2,8 @@ from __future__ import unicode_literals
 
 import operator
 
-from wtforms import fields, widgets
-from wtforms.compat import text_type, string_types
+from argeweb.libs.wtforms import fields, widgets
+from argeweb.libs.wtforms.compat import text_type, string_types
 
 __all__ = ['ReferencePropertyField',
            'StringListPropertyField',

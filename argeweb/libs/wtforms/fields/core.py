@@ -6,11 +6,11 @@ import itertools
 
 from copy import copy
 
-from wtforms import widgets
-from wtforms.compat import text_type, izip
-from wtforms.i18n import DummyTranslations
-from wtforms.validators import StopValidation
-from wtforms.utils import unset_value
+from argeweb.libs.wtforms import widgets
+from argeweb.libs.wtforms.compat import text_type, izip
+from argeweb.libs.wtforms.i18n import DummyTranslations
+from argeweb.libs.wtforms.validators import StopValidation
+from argeweb.libs.wtforms.utils import unset_value
 
 
 __all__ = (
@@ -332,6 +332,12 @@ class Field(object):
         :note: This is a destructive operation. If `obj.<name>` already exists,
                it will be overridden. Use with caution.
         """
+        if self.type == 'IntegerField':
+            if self.data == u'':
+                setattr(obj, name, 0)
+            else:
+                setattr(obj, name, int(self.data))
+            return
         setattr(obj, name, self.data)
 
 
