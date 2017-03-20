@@ -35,6 +35,7 @@
     "summernote": "^0.8.2",
     "instantclick": "^3.1.0",
     "vue": "^2.1.10",
-    "jquery-twzipcode": "^1.7.8"
+    "jquery-twzipcode": "^1.7.8",
+    "jquery-form": "jquery-form/form#^4.1.0"
   }
 }
