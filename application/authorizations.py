@@ -22,19 +22,16 @@ def require_member(controller):
         return False, 'require_member'
     if application_user is None:
         return False, 'require_member'
-    if application_user.role is None:
-        return False, 'require_member'
-    role = application_user.role.get()
+    role = application_user.check_and_get_role('user') or application_user.check_and_get_role('member')
     if role is None:
         return False, 'require_member'
     controller.mobile = mobile
     controller.application_user = application_user
-    controller.application_user_level = role.level
-    controller.prohibited_actions = str(role.prohibited_actions).split(',')
-    controller.context['application_user_level'] = controller.application_user_level
     controller.context['application_user_key'] = application_user.key
     controller.session['application_user_key'] = application_user.key
-    if controller.route.name in controller.prohibited_actions:
+    action_name = '.'.join(str(controller).split(' object')[0][1:].split('.')[0:-1]) + '.' + controller.route.action
+
+    if controller.application_user.has_permission(action_name) is False:
         return controller.abort(403)
     return True
 
