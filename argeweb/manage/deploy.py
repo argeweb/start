@@ -82,18 +82,23 @@ class Deploy:
         project_config.update({
             'project_id': (project_id is not None) and project_id or raw_input('Please enter Project id: '),
             'version': (version is not None) and version or raw_input('Please enter version:  '),
-            'ignore': ''
         })
         if options.save:
             j = json.dumps(project_config, indent=4)
             with open(file_project_config, 'w') as f:
                 f.write(j)
                 print 'config file is save'
-        if project_config['version'] == 'date_today':
+        if project_config['version'] == 'auto_today':
             import datetime
             project_config['version'] = datetime.datetime.today().strftime('%Y%m%d')
-        if 'ignore' in project_config and project_config['ignore'].find('themes') >= 0:
-            project_config['ignore'] = "\n- ^themes/.*$"
+        ignore = ''
+        if 'ignore' in project_config:
+            project_config_ignore = project_config['ignore']
+            if isinstance(project_config_ignore, basestring):
+                project_config_ignore = [project_config_ignore]
+            if isinstance(project_config_ignore, list):
+                ignore = '\n'.join(project_config_ignore)
+            project_config['ignore'] = ignore
         os.chdir(dir_web)
         self.deploy(project_config['project_id'], project_config['version'], project_config['ignore'], options.indexes, options.cron)
 
