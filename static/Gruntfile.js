@@ -75,7 +75,10 @@ module.exports = function (grunt) {
                 files: getFilesRule(['**/prism*.css'], ['**/prism*.js'], false, false, true)
             },
             summernote: {
-                files: getFilesRule(['**/dict/summernote.css'], [], false, false, true)
+                files: getFilesRule(['**/dist/summernote.css'], [], false, false, true)
+            },
+            vue: {
+                files: getFilesRule([], ['**/dist/vue*.*'], false, false, true)
             },
             material: {
                 files: getPluginsFilesRule(
@@ -89,14 +92,6 @@ module.exports = function (grunt) {
             summernote: {
                 src: 'vendor/summernote/summernote.css',
                 dest: 'vendor/summernote/summernote.min.css'
-            },
-            pjax: {
-                src: 'vendor/jquery-pjax/jquery.min.js',
-                dest: 'vendor/jquery-pjax/jquery.pjax.min.js'
-            },
-            pjax_map: {
-                src: 'vendor/jquery-pjax/jquery.min.js.map',
-                dest: 'vendor/jquery-pjax/jquery.pjax.min.js.map'
             },
             steps: {
                 src: 'vendor/jquery.steps/jquery.min.css',
@@ -117,7 +112,6 @@ module.exports = function (grunt) {
                         '**/brace-fold.js',
                         '**/codemirror.js',
                         '**/mode/css/css.js',
-                        '**/jquery.pjax.js',
                         '**/mode/htmlmixed/htmlmixed.js',
                         '**/mode/javascript/javascript.js',
                         '**/message*.js',
@@ -165,7 +159,6 @@ module.exports = function (grunt) {
     grunt.registerTask('prism', ['copy:prism']);
     grunt.registerTask('js', ['uglify:vendor']);
     grunt.registerTask('css', ['cssmin:vendor', 'rename:steps', 'copy:summernote', 'rename:summernote']);
-    //grunt.registerTask('vendor', ['uglify:vendor', 'cssmin:vendor', 'copy:vendor', 'rename:pjax', 'rename:pjax_map']);
-    grunt.registerTask('vendor', ['copy:vendor', 'rename:pjax', 'rename:pjax_map']);
+    grunt.registerTask('vendor', ['copy:vendor', 'copy:vue']);
     grunt.registerTask('default', ['uglify:plugins', 'cssmin:plugins', 'copy:material']);
 };
