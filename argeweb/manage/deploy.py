@@ -17,7 +17,7 @@ class Deploy:
         print str_command
         os.system(str_command)
 
-    def deploy(self, project_id='argeweb-framework', project_version='2016', ignore='', update_indexes=True, update_cron=False):
+    def deploy(self, project_id='argeweb-framework', project_version='2016', ignore='', update_indexes=True, update_cron=False, rollback=False):
         dir_web = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..',  '..')
         os.chdir(dir_web)
         temp_file = open(os.path.join(dir_web, 'temp_deploy.yaml'), 'w+')
@@ -32,7 +32,10 @@ class Deploy:
         app_file.close()
         temp_file.close()
         # run ("gcloud app deploy app.yaml --project argeweb-framework")
-        self.run('appcfg.py update temp_deploy.yaml -A %s -V %s' %(project_id, project_version))
+        if rollback:
+            self.run('appcfg.py rollback temp_deploy.yaml -A %s -V %s' %(project_id, project_version))
+        else:
+            self.run('appcfg.py update temp_deploy.yaml -A %s -V %s' %(project_id, project_version))
         if update_indexes:
             self.run('appcfg.py update_indexes . -A %s -V %s' %(project_id, project_version))
         if update_cron:
@@ -55,6 +58,8 @@ class Deploy:
                           help='also update indexes (default: True)')
         parser.add_option('-C', '--cron', action='store_true', dest='cron', default=False,
                           help='also update cron')
+        parser.add_option('-R', '--rollback', action='store_true', dest='rollback', default=False,
+                          help='rollback')
         parser.add_option('--save', action='store_true', dest='save', default=False,
                           help='save info into .json')
 
@@ -100,7 +105,7 @@ class Deploy:
                 ignore = '\n'.join(project_config_ignore)
             project_config['ignore'] = ignore
         os.chdir(dir_web)
-        self.deploy(project_config['project_id'], project_config['version'], project_config['ignore'], options.indexes, options.cron)
+        self.deploy(project_config['project_id'], project_config['version'], project_config['ignore'], options.indexes, options.cron, options.rollback)
 
 if __name__ == '__main__':
     Deploy()
