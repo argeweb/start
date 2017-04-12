@@ -21,8 +21,7 @@ from pytz.tzinfo import DstTzInfo, StaticTzInfo
 
 # I test for expected version to ensure the correct version of pytz is
 # actually being tested.
-EXPECTED_VERSION='2014.4'
-EXPECTED_OLSON_VERSION='2014d'
+EXPECTED_VERSION='2013.8'
 
 fmt = '%Y-%m-%d %H:%M:%S %Z%z'
 
@@ -65,12 +64,8 @@ class BasicTest(unittest.TestCase):
         self.assertEqual(EXPECTED_VERSION, pytz.__version__,
                 'Incorrect pytz version loaded. Import path is stuffed '
                 'or this test needs updating. (Wanted %s, got %s)'
-                % (EXPECTED_VERSION, pytz.__version__))
-
-        self.assertEqual(EXPECTED_OLSON_VERSION, pytz.OLSON_VERSION,
-                'Incorrect pytz version loaded. Import path is stuffed '
-                'or this test needs updating. (Wanted %s, got %s)'
-                % (EXPECTED_OLSON_VERSION, pytz.OLSON_VERSION))
+                % (EXPECTED_VERSION, pytz.__version__)
+                )
 
     def testGMT(self):
         now = datetime.now(tz=GMT)
@@ -183,8 +178,7 @@ class PicklingTest(unittest.TestCase):
             "cpytz\n_p\np1\n(S'US/Eastern'\np2\nI-18000\n"
             "I0\nS'EST'\np3\ntRp4\n."
             ))
-        east2 = pytz.timezone('US/Eastern').localize(
-            datetime(2006, 1, 1)).tzinfo
+        east2 = pytz.timezone('US/Eastern')
         self.assertTrue(east1 is east2)
 
         # Confirm changes in name munging between 2006j and 2007c cause
@@ -192,8 +186,7 @@ class PicklingTest(unittest.TestCase):
         pap1 = pickle.loads(_byte_string(
             "cpytz\n_p\np1\n(S'America/Port_minus_au_minus_Prince'"
             "\np2\nI-17340\nI0\nS'PPMT'\np3\ntRp4\n."))
-        pap2 = pytz.timezone('America/Port-au-Prince').localize(
-            datetime(1910, 1, 1)).tzinfo
+        pap2 = pytz.timezone('America/Port-au-Prince')
         self.assertTrue(pap1 is pap2)
 
         gmt1 = pickle.loads(_byte_string(
@@ -570,8 +563,8 @@ class ReferenceUSEasternDSTEndTestCase(USEasternDSTEndTestCase):
 
     def testHourBefore(self):
         # Python's datetime library has a bug, where the hour before
-        # a daylight saving transition is one hour out. For example,
-        # at the end of US/Eastern daylight saving time, 01:00 EST
+        # a daylight savings transition is one hour out. For example,
+        # at the end of US/Eastern daylight savings time, 01:00 EST
         # occurs twice (once at 05:00 UTC and once at 06:00 UTC),
         # whereas the first should actually be 01:00 EDT.
         # Note that this bug is by design - by accepting this ambiguity

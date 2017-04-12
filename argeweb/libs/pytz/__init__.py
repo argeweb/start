@@ -1,3 +1,115 @@
+"""
+The following is the Google App Engine loader for pytz.
+
+It is monkeypatched, prepending pytz/__init__.py
+
+Here are some helpful links discussing the problem:
+
+    https://code.google.com/p/gae-pytz/source/browse/pytz/gae.py
+    http://appengine-cookbook.appspot.com/recipe/caching-pytz-helper/
+
+This is all based on the helpful gae-pytz project, here:
+
+    https://code.google.com/p/gae-pytz/
+"""
+
+# easy test to make sure we are running the appengine version
+APPENGINE_PYTZ = True
+
+# Put pytz into its own ndb namespace, so we avoid conflicts
+NDB_NAMESPACE = '.pytz'
+
+from google.appengine.ext import ndb
+
+
+class Zoneinfo(ndb.Model):
+    """A model containing the zone info data
+    """
+    data = ndb.BlobProperty(compressed=True)
+
+
+def init_zoneinfo():
+    """
+    Add each zone info to the datastore. This will overwrite existing zones.
+
+    This must be called before the AppengineTimezoneLoader will work.
+    """
+    import os
+    import logging
+    from zipfile import ZipFile
+    zoneobjs = []
+
+    zoneinfo_path = os.path.abspath(
+        os.path.join(os.path.dirname(__file__), 'zoneinfo.zip'))
+
+    with ZipFile(zoneinfo_path) as zf:
+        for zfi in zf.filelist:
+            key = ndb.Key('Zoneinfo', zfi.filename, namespace=NDB_NAMESPACE)
+            zobj = Zoneinfo(key=key, data=zf.read(zfi))
+            zoneobjs.append(zobj)
+
+    logging.info(
+        "Adding %d timezones to the pytz-appengine database" %
+        len(zoneobjs))
+
+    ndb.put_multi(zoneobjs)
+
+
+def open_resource(name):
+    """Load the object from the datastore"""
+    import logging
+    from cStringIO import StringIO
+    try:
+        data = ndb.Key('Zoneinfo', name, namespace=NDB_NAMESPACE).get().data
+    except AttributeError:
+        # Missing zone info; test for GMT
+        # which would be there if the Zoneinfo has been initialized.
+        if ndb.Key('Zoneinfo', 'GMT', namespace=NDB_NAMESPACE).get():
+            # the user asked for a zone that doesn't seem to exist.
+            logging.exception(
+                "Requested zone '%s' is not in the database." % name)
+            raise
+
+        # we need to initialize the database
+        init_zoneinfo()
+        return open_resource(name)
+
+    return StringIO(data)
+
+
+def resource_exists(name):
+    """Return true if the given timezone resource exists.
+    Since we are loading the whole PyTZ database, this should always be true
+    """
+    return True
+
+
+def setup_module():
+    """Set up tests (used by e.g. nosetests) for the module - loaded once"""
+    from google.appengine.ext import testbed
+    global _appengine_testbed
+    tb = testbed.Testbed()
+    tb.activate()
+    tb.setup_env()
+    tb.init_datastore_v3_stub()
+    tb.init_memcache_stub()
+
+    _appengine_testbed = tb
+
+
+def teardown_module():
+    """Any clean-up after each test"""
+    global _appengine_testbed
+    _appengine_testbed.deactivate()
+
+#
+# >>>>>>>>>>>>>
+# >>>>>>>>>>>>>     end pytz-appengine augmentation
+# >>>>>>>>>>>>>
+#
+# The following shall be the canonical pytz/__init__.py
+# modified to remove open_resource and resource_exists
+#
 '''
 datetime.tzinfo timezone definitions generated from the
 Olson timezone database:
@@ -9,8 +121,8 @@ on how to use these modules.
 '''
 
 # The Olson database is updated several times a year.
-OLSON_VERSION = '2014d'
-VERSION = '2014.4'  # Switching to pip compatible version numbering.
+OLSON_VERSION = '2013h'
+VERSION = '2013.8'  # Switching to pip compatible version numbering.
 __version__ = VERSION
 
 OLSEN_VERSION = OLSON_VERSION # Old releases had this misspelling
@@ -76,7 +188,7 @@ else: # Python 2.x
         return s.encode('US-ASCII')
 
 
-def open_resource(name):
+def __open_resource(name):
     """Open a resource from the zoneinfo subdir for reading.
 
     Uses the pkg_resources module if available and no standard file
@@ -88,71 +200,15 @@ def open_resource(name):
             raise ValueError('Bad path segment: %r' % part)
     filename = os.path.join(os.path.dirname(__file__),
                             'zoneinfo', *name_parts)
-    if not os.path.exists(filename):
-      if False: #resource_stream is not None:
+    if not os.path.exists(filename) and resource_stream is not None:
         # http://bugs.launchpad.net/bugs/383171 - we avoid using this
         # unless absolutely necessary to help when a broken version of
         # pkg_resources is installed.
         return resource_stream(__name__, 'zoneinfo/' + name)
-      else:
-        # 'zoneinfo.zip' must be in your application directory
-        # memcached must be running on '127.0.0.1:11211' (for local test only)
-        #   (memcached has been running on GAE)
-        # it takes about few seconds to run at the first time, but faster next
-        # please delete key 'pytz_loaded' from cache when update pytz zoneinfo
-        import logging
-        import base64
-        import zipfile
-        from cStringIO import StringIO
-        if 'SERVER_SOFTWARE' in os.environ.keys(): # on GAE
-          from google.appengine.api import memcache
-          mem = memcache.Client()
-        else:
-          import memcache
-          mem = memcache.Client(['127.0.0.1:11211'], debug=0)
-        zifile = 'zoneinfo.zip'
-        # zifile = os.path.join(os.path.dirname(__file__), zifile)
-        tzfn = '/'.join(('zoneinfo', '/'.join(name_parts)))
-        tzkey = '/'.join(('pytz', tzfn))
-        try:
-          tz_loaded = mem.get(tzkey)
-        except (Exception, ), e:
-          tz_loaded = None
-        if tz_loaded is None:
-          pytzkey = 'pytz_loaded'
-          try:
-            pytz_loaded = mem.get(pytzkey)
-          except (Exception, ), e:
-            pytz_loaded = None
-            logging.info('not exist %s' % pytzkey)
-          if pytz_loaded is None:
-            f = open(zifile, 'rb')
-            b = f.read()
-            f.close()
-            zoneinfo = zipfile.ZipFile(StringIO(b))
-            for fn in zoneinfo.namelist():
-              if fn.endswith('/'): continue
-              d = zoneinfo.read(fn)
-              mem.set('/'.join(('pytz', fn)), base64.b64encode(d)) # time=0
-            zoneinfo.close()
-            mem.set(pytzkey, 'done') # time=0
-            logging.info('set %s' % pytzkey)
-          else:
-            pass # logging.info('exist %s' % pytzkey)
-          try:
-            d = mem.get(tzkey)
-          except (Exception, ), e:
-            d = None
-          if d is None: # worst case
-            d = zipfile.ZipFile(zifile).read(tzfn)
-            mem.set(tzkey, base64.b64encode(d)) # time=0
-        else:
-          d = base64.b64decode(tz_loaded)
-        return StringIO(d)
     return open(filename, 'rb')
 
 
-def resource_exists(name):
+def __resource_exists(name):
     """Return true if the given resource exists"""
     try:
         open_resource(name).close()
@@ -166,7 +222,7 @@ def resource_exists(name):
 # module, as well as the Zope3 i18n package. Perhaps we should just provide
 # the POT file and translations, and leave it up to callers to make use
 # of them.
-#
+# 
 # t = gettext.translation(
 #         'pytz', os.path.join(os.path.dirname(__file__), 'locales'),
 #         fallback=True
@@ -179,7 +235,7 @@ def resource_exists(name):
 _tzinfo_cache = {}
 
 def timezone(zone):
-    r''' Return a datetime.tzinfo implementation for the given timezone
+    r''' Return a datetime.tzinfo implementation for the given timezone 
 
     >>> from datetime import datetime, timedelta
     >>> utc = timezone('UTC')
@@ -303,7 +359,7 @@ UTC = utc = UTC() # UTC is a singleton
 def _UTC():
     """Factory function for utc unpickling.
 
-    Makes sure that unpickling a utc instance always returns the same
+    Makes sure that unpickling a utc instance always returns the same 
     module global.
 
     These examples belong in the UTC class above, but it is obscured; or in
@@ -772,7 +828,6 @@ all_timezones = \
  'Antarctica/Rothera',
  'Antarctica/South_Pole',
  'Antarctica/Syowa',
- 'Antarctica/Troll',
  'Antarctica/Vostok',
  'Arctic/Longyearbyen',
  'Asia/Aden',
@@ -1125,7 +1180,7 @@ all_timezones = \
  'Zulu']
 all_timezones = LazyList(
         tz for tz in all_timezones if resource_exists(tz))
-
+        
 all_timezones_set = LazySet(all_timezones)
 common_timezones = \
 ['Africa/Abidjan',
@@ -1336,7 +1391,6 @@ common_timezones = \
  'Antarctica/Palmer',
  'Antarctica/Rothera',
  'Antarctica/Syowa',
- 'Antarctica/Troll',
  'Antarctica/Vostok',
  'Arctic/Longyearbyen',
  'Asia/Aden',
@@ -1562,5 +1616,5 @@ common_timezones = \
  'UTC']
 common_timezones = LazyList(
             tz for tz in common_timezones if tz in all_timezones)
-
+        
 common_timezones_set = LazySet(common_timezones)
