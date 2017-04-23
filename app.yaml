@@ -41,7 +41,7 @@ handlers:
 - url: /assets/(themes|plugins)/(.*?)/static/(.+\.(gif|jpg|jpeg|png|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))$
   script: plugins.file.getfile
 
-- url: /r/(themes|plugins)/(.*?)/(.*)
+- url: /r/(themes|plugins)/(.*?)/(.+\.(js|css|gif|jpg|jpeg|png|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))
   static_files: \1/\2/\3
   upload: (.*?)/(.*?)/(.*)
 
