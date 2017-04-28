@@ -103,7 +103,7 @@ class Deploy:
                 project_config_ignore = [project_config_ignore]
             if isinstance(project_config_ignore, list):
                 ignore = '\n'.join(project_config_ignore)
-            project_config['ignore'] = ignore
+        project_config['ignore'] = ignore
         os.chdir(dir_web)
         self.deploy(project_config['project_id'], project_config['version'], project_config['ignore'], options.indexes, options.cron, options.rollback)
 
