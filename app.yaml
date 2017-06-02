@@ -45,6 +45,36 @@ handlers:
   static_files: \1/\2/\3
   upload: (themes|plugins)/(.*?)/(.+\.(js|css|gif|jpg|jpeg|png|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))
 
+- url: /(themes|plugins)/(.*?)/static/(.+\.(woff))
+  static_files: \1/\2/static/\3
+  upload: (themes|plugins)/(.*?)/static/(.+\.(woff))
+  mime_type: application/font-woff
+
+- url: /(themes|plugins)/(.*?)/static/(.+\.(woff2))
+  static_files: \1/\2/static/\3
+  upload: (themes|plugins)/(.*?)/static/(.+\.(woff2))
+  mime_type: application/font-woff2
+
+- url: /(themes|plugins)/(.*?)/static/(.+\.(svg))
+  static_files: \1/\2/static/\3
+  upload: (themes|plugins)/(.*?)/static/(.+\.(svg))
+  mime_type: image/svg+xml
+
+- url: /(themes|plugins)/(.*?)/static/(.+\.(eot))
+  static_files: \1/\2/static/\3
+  upload: (themes|plugins)/(.*?)/static/(.+\.(eot))
+  mime_type: application/vnd.ms-fontobject
+
+- url: /(themes|plugins)/(.*?)/static/(.+\.(ttf))
+  static_files: \1/\2/static/\3
+  upload: (themes|plugins)/(.*?)/static/(.+\.(ttf))
+  mime_type: application/octet-stream
+
+- url: /(themes|plugins)/(.*?)/static/(.+\.(json))
+  static_files: \1/\2/static/\3
+  upload: (themes|plugins)/(.*?)/static/(.+\.(json))
+  mime_type: application/json
+
 - url: /(themes|plugins)/(.*?)/static/(.*)
   static_files: \1/\2/static/\3
   upload: (themes|plugins)/(.*?)/static/(.*)
