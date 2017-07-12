@@ -11,7 +11,7 @@ def run(str_command):
 
 def main():
     argv = []
-    base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..')
+    base_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
     if len(sys.argv) == 1:
         dir = os.path.join(base_dir, 'argeweb')
         os.chdir(dir)

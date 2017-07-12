@@ -33,7 +33,7 @@ def main():
                     arg = arg + '=argeweb/plugin-' + arg
             argv.append(arg)
 
-    plugins_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..',  'plugins')
+    plugins_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'plugins')
     os.chdir(plugins_dir)
     run('bower install ' + ' '.join(argv))
 
