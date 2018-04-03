@@ -543,6 +543,7 @@ class Session(SessionRedirectMixin):
         return self.request('POST', url, data=data, json=json, **kwargs)
 
     def put(self, url, data=None, **kwargs):
+        # type: (object, object, object) -> object
         """Sends a PUT request. Returns :class:`Response` object.
 
         :param url: URL for the new :class:`Request` object.

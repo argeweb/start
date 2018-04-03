@@ -18,10 +18,12 @@
     "bootstrap": "^3.3.7",
     "jquery": "~2.1.4",
     "jquery.steps": "jquery-steps#^1.1.0",
-    "jquery-validation": "^1.15.1",
+    "jquery-validation": "^1.17.0",
     "jquery-pjax": "^1.9.6",
     "jquery-sortable-lists": "^1.3.0",
     "jquery.easing": "^1.3.1",
+    "jquery-twzipcode": "^1.7.8",
+    "jquery-form": "jquery-form/form#^4.1.0",
     "sweetalert2": "~4.1.9",
     "codemirror": "~5.18.2",
     "moment": "^2.14.1",
@@ -35,8 +37,6 @@
     "summernote": "^0.8.2",
     "instantclick": "^3.1.0",
     "vue": "^2.1.10",
-    "jquery-twzipcode": "^1.7.8",
-    "jquery-form": "jquery-form/form#^4.1.0",
-    "firebaseui": "^1.0.0"
+    "firebaseui": "~1.0.0"
   }
 }

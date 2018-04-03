@@ -154,7 +154,7 @@ else:
     file_theme_config = os.path.join(manager_dir, 'theme_%s.json' % options.theme_name)
 temp_config = None
 try:
-    with open(file_theme_config, "r+") as f:
+    with open(file_theme_config, 'r+') as f:
         theme_config = json.load(fp=f)
         tmp_host = options.server is not None and options.server or theme_config['host']
         tmp_acc = options.account is not None and options.account or theme_config['account']
@@ -226,7 +226,7 @@ themes_dir = themes_dir
 theme_path = theme_path
 requests_session = requests_session
 ext_list_code_file = 'html|js|css'
-ext_list_other = 'gif|jpg|jpeg|png|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss'.split('|')
+ext_list_other = 'gif|jpg|jpeg|png|woff|woff2|swf|ico|icon|eot|svg|ttf|avi|mpeg|mp4|less|scss'.split('|')
 for root_path, _, files in os.walk(themes_dir):
     for file_name in files:
         file_and_ext = file_name.split('.')

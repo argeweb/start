@@ -93,14 +93,20 @@ class KeyPropertyField(fields.SelectFieldBase):
 
     def iter_choices(self):
         if self.allow_blank:
-            yield ('__None', self.blank_text, self.data is None)
+            yield ('__None', self.blank_text, self.data is None, None)
 
         for obj in self.query:
             key = self._key_value(obj.key)
             label = self.get_label(obj)
-            yield (key,
-                   label,
-                   (self.data == obj.key) if self.data else False)
+            category = None
+            if hasattr(self, 'category'):
+                category = self.category
+            yield (
+                key,
+                label,
+                (self.data == obj.key) if self.data else False,
+                category
+            )
 
     def process_formdata(self, valuelist):
         if valuelist:

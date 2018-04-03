@@ -74,6 +74,7 @@ class SessionCSRF(CSRF):
                 raise ValidationError(field.gettext('CSRF token expired'))
 
     def now(self):
+        # type: () -> object
         """
         Get the current time. Used for test mocking/overriding mainly.
         """

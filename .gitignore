@@ -174,3 +174,4 @@ pip-log.txt
 .DS_Store
 bower_components/
 static/components/
+application/backup_index.yaml

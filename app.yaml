@@ -16,68 +16,94 @@ includes:
 - plugins/user_file/include.yaml
 
 handlers:
-- url: /(.*?).manifest
-  static_files: static/\1.manifest
-  upload: static/(.*?).manifest
-  mime_type: text/cache-manifest
-
-- url: /(.*?).appcache
-  static_files: static/\1.appcache
-  upload: static/(.*?).appcache
-  mime_type: text/cache-manifest
-
-- url: /favicon.ico
-  static_files: static/favicon.ico
-  upload: static/favicon.ico
-  mime_type: image/x-icon
-
-- url: /robots.txt
-  static_files: static/robots.txt
-  upload: static/robots.txt
-
-- url: /assets/(themes|plugins|application)/(.*?)/static/(.+\.(js|css))$
-  script: plugins.code.getcode
-
-- url: /assets/(themes|plugins|application)/(.*?)/static/(.+\.(gif|jpg|jpeg|png|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))$
-  script: plugins.file.getfile
-
-- url: /r/(themes|plugins|application)/(.*?)/(.+\.(js|css|gif|jpg|jpeg|png|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))
+- url: /(themes|plugins|application)/(.*?)/(.+\.(pdf))
   static_files: \1/\2/\3
-  upload: (themes|plugins|application)/(.*?)/(.+\.(js|css|gif|jpg|jpeg|png|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))
-
-- url: /(themes|plugins|application)/(.*?)/static/(.+\.(woff))
-  static_files: \1/\2/static/\3
-  upload: (themes|plugins|application)/(.*?)/static/(.+\.(woff))
-  mime_type: application/font-woff
-
-- url: /(themes|plugins|application)/(.*?)/static/(.+\.(woff2))
-  static_files: \1/\2/static/\3
-  upload: (themes|plugins|application)/(.*?)/static/(.+\.(woff2))
-  mime_type: application/font-woff2
-
-- url: /(themes|plugins|application)/(.*?)/static/(.+\.(svg))
-  static_files: \1/\2/static/\3
-  upload: (themes|plugins|application)/(.*?)/static/(.+\.(svg))
-  mime_type: image/svg+xml
-
-- url: /(themes|plugins|application)/(.*?)/static/(.+\.(eot))
-  static_files: \1/\2/static/\3
-  upload: (themes|plugins|application)/(.*?)/static/(.+\.(eot))
-  mime_type: application/vnd.ms-fontobject
-
-- url: /(themes|plugins|application)/(.*?)/static/(.+\.(ttf))
-  static_files: \1/\2/static/\3
-  upload: (themes|plugins|application)/(.*?)/static/(.+\.(ttf))
+  upload: (themes|plugins|application)/(.*?)/(.+\.(pdf))
   mime_type: application/octet-stream
 
-- url: /(themes|plugins|application)/(.*?)/static/(.+\.(json))
-  static_files: \1/\2/static/\3
-  upload: (themes|plugins|application)/(.*?)/static/(.+\.(json))
+- url: /(themes|plugins|application)/(.*?)/(.+\.(woff))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(woff))
+  mime_type: application/font-woff
+
+- url: /(themes|plugins|application)/(.*?)/(.+\.(woff2))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(woff2))
+  mime_type: application/font-woff2
+
+- url: /(themes|plugins|application)/(.*?)/(.+\.(svg))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(svg))
+  mime_type: image/svg+xml
+
+- url: /(themes|plugins|application)/(.*?)/(.+\.(eot))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(eot))
+  mime_type: application/vnd.ms-fontobject
+
+- url: /(themes|plugins|application)/(.*?)/(.+\.(ttf))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(ttf))
+  mime_type: application/octet-stream
+
+- url: /(themes|plugins|application)/(.*?)/(.+\.(json))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(json))
   mime_type: application/json
 
-- url: /(themes|plugins|application)/(.*?)/static/(.*)
-  static_files: \1/\2/static/\3
-  upload: (themes|plugins|application)/(.*?)/static/(.*)
+- url: /(themes|plugins|application)/(.*?)/(.+\.(js))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(js))
+  mime_type: text/javascript
+
+- url: /(themes|plugins|application)/(.*?)/(.+\.(css|less|sass|scss))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(css|less|sass|scss))
+  mime_type: text/css
+
+- url: /(themes|plugins|application)/(.*?)/(.+\.(jpg|jpeg))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(jpg|jpeg))
+  mime_type: image/jpeg
+
+- url: /(themes|plugins|application)/(.*?)/(.+\.(png))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(png))
+  mime_type: image/png
+
+- url: /(themes|plugins|application)/(.*?)/(.+\.(ico|icon))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(ico|icon))
+  mime_type: image/x-icon
+
+- url: /(themes|plugins|application)/(.*?)/(.+\.(gif))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(gif))
+  mime_type: image/gif
+
+- url: /r/(themes|plugins|application)/(.*?)/(.+\.(js|css|gif|jpg|jpeg|ico|icon|png|swf|avi|mpeg|mp4|less|sass|scss))
+  static_files: \1/\2/\3
+  upload: (themes|plugins|application)/(.*?)/(.+\.(js|css|gif|jpg|jpeg|ico|icon|png|swf|avi|mpeg|mp4|less|sass|scss))
+
+- url: /(static)/(.*?)/(.+\.(eot))
+  static_files: \1/\2/\3
+  upload: (static)/(.*?)/(.+\.(eot))
+  mime_type: application/vnd.ms-fontobject
+
+- url: /(static)/(.*?)/(.+\.(otf))
+  static_files: \1/\2/\3
+  upload: (static)/(.*?)/(.+\.(otf))
+  mime_type: application/font-otf
+
+- url: /(static)/(.*?)(.+\.(json))
+  static_files: \1/\2\3
+  upload: (static)/(.*?)(.+\.(json))
+  mime_type: application/javascript
+
+- url: /(static)/(.*?)(.+\.(map))
+  static_files: \1/\2\3
+  upload: (static)/(.*?)(.+\.(map))
+  mime_type: application/octet-stream
 
 - url: /static
   static_dir: static
@@ -106,14 +132,27 @@ handlers:
   script: plugins.webdav.webdav_application.web_dav
   secure: always
 
+- url: /assets/(.+\.(js|css))$
+  script: plugins.code.getcode
+  secure: always
+
+- url: /assets/(.+\.(gif|jpg|jpeg|png|ico|icon|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))$
+  script: plugins.file.getfile
+  secure: always
+
 - url: /(.+\.(js|css))$
   script: plugins.code.getcode
+  secure: always
 
-- url: /(.+\.(gif|jpg|jpeg|png|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))$
+- url: /(.+\.(gif|jpg|jpeg|png|ico|icon|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))$
   script: plugins.file.getfile
+  secure: always
 
 - url: /.*
   script: argeweb.application.instance
+  secure: always
+
+#automatic_scaling
 
 libraries:
 - name: PIL
@@ -131,6 +170,8 @@ libraries:
 #ssl
 
 skip_files:
+- ^temp_deploy.yaml$
+- ^manage.py$
 - ^(.*/)?#.*#$
 - ^(.*/)?.*~$
 - ^(.*/)?.*\.py[co]$
@@ -138,7 +179,7 @@ skip_files:
 - ^(.*/)?.*/gae_config/.*$
 - ^(.*/)?.*static/bower_components/.*$
 - ^(.*/)?.*static/node_modules/.*$
-- ^(.*/)?.*argeweb/manage/.*$
+- ^(.*/)?.*manage/.*$
 - ^(.*/)?.*/.git/.*$
 - ^(.*/)?\..*$
 - ^(.*/)?.*\.php$
@@ -152,3 +193,7 @@ skip_files:
 - ^(.*/)?.idea*~$
 - ^(.*/)?.*\.py___jb_bak___$
 - ^(.*/)?.*\.py___jb_old___$
+- ^(.*/)bower_path.json$
+- ^(.*/)bower.json$
+- ^(.*/)desktop.ini$
+- ^(.*/).dropbox$

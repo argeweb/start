@@ -29,20 +29,21 @@ def get_instance():
     from argeweb.core import errors
     from argeweb.core import routing
     settings, s = get_setting()
+
     appstats_settings = s['appstats']
     app_config_settings = s['app_config']
     debug = True
     _instance = WSGIApplication(
         debug=debug, config=app_config_settings)
-    # Custom Error Handlers
-    if debug is False:
+    if debug is True:
         _instance.error_handlers[400] = errors.handle_400
         _instance.error_handlers[401] = errors.handle_401
         _instance.error_handlers[403] = errors.handle_403
         _instance.error_handlers[404] = errors.handle_404
         _instance.error_handlers[500] = errors.handle_500
-    routing.auto_route(_instance.router, debug, version)
+    routing.auto_route(_instance.router, version)
 
-    return recording.appstats_wsgi_middleware(_instance)
+    # _instance = recording.appstats_wsgi_middleware(_instance)
+    return _instance
  
 instance = get_instance()

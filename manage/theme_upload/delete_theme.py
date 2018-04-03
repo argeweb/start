@@ -112,7 +112,7 @@ else:
     file_theme_config = os.path.join(manager_dir, 'theme_%s.json' % options.theme_name)
 temp_config = None
 try:
-    with open(file_theme_config, "r+") as f:
+    with open(file_theme_config, 'r+') as f:
         theme_config = json.load(fp=f)
         tmp_host = options.server is not None and options.server or theme_config['host']
         tmp_acc = options.account is not None and options.account or theme_config['account']

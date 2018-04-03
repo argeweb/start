@@ -338,6 +338,24 @@ class Field(object):
             else:
                 setattr(obj, name, int(self.data))
             return
+        if self.type == 'FloatField':
+            if self.data == u'':
+                setattr(obj, name, 0)
+            else:
+                setattr(obj, name, float(self.data))
+            return
+        if self.type == 'RangeField':
+            if self.data == u'':
+                setattr(obj, name, 0)
+            else:
+                setattr(obj, name, float(self.data))
+            return
+        if self.type == 'UserField':
+            if self.data == u'':
+                setattr(obj, name, None)
+            else:
+                setattr(obj, name, self.data.key)
+            return
         setattr(obj, name, self.data)
 
 

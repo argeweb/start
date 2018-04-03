@@ -177,7 +177,14 @@ class ModelConverterBase(object):
         choices = kwargs.get('choices', None) or prop._choices
         if choices:
             # Use choices in a select field.
-            kwargs['choices'] = [(v, v) for v in choices]
+            choicess_list = []
+            for item in choices:
+                if item in prop._choices_text:
+                    choicess_list.append((item, prop._choices_text[item]))
+                else:
+                    choicess_list.append((item, item))
+            # kwargs['choices'] = [(v, v) for v in choices]
+            kwargs['choices'] = choicess_list
             if prop._repeated:
                 return f.SelectMultipleField(**kwargs)
             else:
