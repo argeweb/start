@@ -2,21 +2,30 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import datetime
+
+
+def raw_input_with_time(str_command):
+    return raw_input('%s %s' % (datetime.datetime.now().strftime('%H:%M %p'), str_command))
+
+
+def print_with_time(str_command):
+    print ('%s %s' % (datetime.datetime.now().strftime('%H:%M %p'), str_command))
 
 
 def change_dir(dir_path):
-    print dir_path
     os.chdir(dir_path)
+    print (dir_path)
 
 
 def run(str_command):
-    print str_command
+    print_with_time(str_command)
     os.system(str_command)
 
-script_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)))
-argeweb_dir = os.path.join(script_dir, 'argeweb')
-plugins_dir = os.path.join(script_dir, 'plugins')
-manage_dir = os.path.join(argeweb_dir, 'manage')
+framework_root_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)))
+argeweb_dir = os.path.join(framework_root_dir, 'argeweb')
+plugins_dir = os.path.join(framework_root_dir, 'plugins')
+manage_dir = os.path.join(framework_root_dir, 'manage')
 
 action = ""
 argv = []
@@ -35,13 +44,13 @@ for n in xrange(0, len(sys.argv)):
 
 def update(argv):
     if len(argv) == 0:
-        change_dir(argeweb_dir)
-        run('bower update')
+        # change_dir(argeweb_dir)
+        # run('bower update')
 
         change_dir(plugins_dir)
         run('bower update')
 
-        # target_dir = os.path.join(base_dir, 'static')
+        # target_dir = os.path.join(dir_root, 'static')
         # os.chdir(target_dir)
         # run('bower update')
         # run('bower list --paths --json > bower_path.json')
@@ -51,8 +60,8 @@ def update(argv):
             arg = str(argv[n])
             if n == 1 and arg.find('=') < 0:
                 if arg.startswith('argeweb/plugin-') is True:
-                    arg = '_'.join(arg.split('-')[1:]) + '=' + arg
-                    bower_argv.append(arg)
+                    new_arg = '_'.join(arg.split('-')[1:]) + '=' + arg
+                    bower_argv.append(new_arg)
                 else:
                     bower_argv.append(arg)
 

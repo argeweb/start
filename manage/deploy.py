@@ -150,16 +150,17 @@ class Deploy:
             project_config.update({
                 n: (n_val is not None) and n_val or raw_input_with_time('Please enter %s: ' % n)
             })
-        if no_config_file and options.save is False:
-            y = raw_input_with_time('Would you want to save config file (y/N): ')
-            options.save = (y == 'y' or y == 'Y')
-        if options.save:
-            j = json.dumps(project_config, indent=4)
-            with open(config_file_in_manage, 'w') as f:
-                f.write(j)
-                print_with_time('config file is save')
         if project_config['version'] == 'auto_today':
             project_config['version'] = datetime.datetime.today().strftime('%Y%m%d')
+        else:
+            if no_config_file and options.save is False:
+                y = raw_input_with_time('Would you want to save config file (y/N): ')
+                options.save = (y == 'y' or y == 'Y')
+            if options.save:
+                j = json.dumps(project_config, indent=4)
+                with open(config_file_in_manage, 'w') as f:
+                    f.write(j)
+                    print_with_time('config file is save')
         self.target_applications = self.get_target_applications(project_config, project_config_name)
 
         # start deploy
