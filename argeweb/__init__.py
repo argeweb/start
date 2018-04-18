@@ -7,7 +7,7 @@ import packages
 from argeweb.core.menu import route_menu
 from argeweb.core.controller import Controller, route, route_with, require_post, require_user
 from argeweb.core.controller import add_authorizations
-from argeweb.libs import wtforms
+from argeweb.core.forms import wtforms
 from argeweb.core import settings as settings
 from argeweb.core import inflector, caching
 from argeweb.core import scaffold
@@ -21,7 +21,8 @@ from argeweb.components.pagination import Pagination
 from argeweb.components.search import Search
 from argeweb.components.upload import Upload
 from argeweb.behaviors.searchable import Searchable
-
+from argeweb.application import get_instance
+from argeweb.core.forms.wtforms_appengine.ndb import model_form
 # controllers = Controller._controllers
 
 __all__ = (
