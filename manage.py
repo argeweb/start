@@ -44,8 +44,8 @@ for n in xrange(0, len(sys.argv)):
 
 def update(argv):
     if len(argv) == 0:
-        # change_dir(argeweb_dir)
-        # run('bower update')
+        change_dir(argeweb_dir)
+        run('bower update')
 
         change_dir(plugins_dir)
         run('bower update')
