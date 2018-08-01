@@ -1,3 +1,15 @@
-{{ count_application_user() }}
 
-{{ count_application_user_with_date() }}
+<script type="text/javascript" src="/static/vendor/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="/plugins/user_file/static/argeweb_uploader.js?r=1"></script>
+
+<body>
+
+{% set case_no = '1' %}
+{% set x = '1' %}
+<form>
+<input name="{{ case_no }}-doc-{{ x }}" type="text" id="{{ case_no }}-doc-{{ x }}"
+       value=""
+       class="gs-file argeweb-file-uploader" autocomplete="off">
+</form>
+
+</body>
