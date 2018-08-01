@@ -12,87 +12,36 @@ import sys
 import datetime
 
 path_join = os.path.join
+os_input = raw_input
+if input:
+    os_input = input
 
 
 def raw_input_with_time(str_command):
-    return raw_input('%s %s' % (datetime.datetime.now().strftime('%H:%M %p'), str_command))
+    return os_input('%s %s' % (datetime.datetime.now().strftime('%H:%M %p'), str_command))
 
 
 def print_with_time(str_command):
-    print '%s %s' % (datetime.datetime.now().strftime('%H:%M %p'), str_command)
+    print ('%s %s' % (datetime.datetime.now().strftime('%H:%M %p'), str_command))
+
+
+def get_config_file_from(file_path):
+    """載入 json 格式的設定檔
+    :param file_path: config file path
+    :return: config dict
+    """
+    try:
+        with open(file_path, 'r+') as f:
+            config = json.load(fp=f)
+            return config, False
+    except IOError:
+        pass
+    return None, True
 
 
 class Deploy:
-    @staticmethod
-    def run(str_command):
-        print_with_time(str_command)
-        os.system(str_command)
-
-    def merge_yaml(self, file_name, first_line):
-        file_need_to_join = self.get_files(self.dir_plugins, file_name)
-        for p in self.get_application_dir():
-            file_need_to_join += self.get_files(p, file_name)
-        target_file_name = path_join(self.dir_root, file_name)
-        target_file = open(target_file_name, 'w')
-        target_file.write(first_line + ':\n')
-        for fr in file_need_to_join:
-            target_file.write('# %s .\n' % os.path.abspath(fr))
-            for line in open(fr, 'r'):
-                target_file.write(line)
-            target_file.write('\n')
-        target_file.close()
-
-    def process_automatic_scaling_list(self, project_config):
-        project_config_automatic_scaling = []
-        if 'automatic_scaling' in project_config:
-            project_config_automatic_scaling = project_config['automatic_scaling']
-            if isinstance(project_config_automatic_scaling, basestring):
-                project_config_automatic_scaling = [project_config_automatic_scaling]
-        if isinstance(project_config_automatic_scaling, list):
-            return 'automatic_scaling:\n  '+ '\n  '.join(project_config_automatic_scaling)
-        return ''
-
-    def process_ignore_list(self, project_config):
-        project_config_ignore = []
-        if 'ignore' in project_config:
-            project_config_ignore = project_config['ignore']
-            if isinstance(project_config_ignore, basestring):
-                project_config_ignore = [project_config_ignore]
-        project_config_ignore += self.ignore_application_dir()
-        if isinstance(project_config_ignore, list):
-            return '\n'.join(project_config_ignore)
-        return ''
-
-    def ignore_application_dir(self):
-        ignore_list_in_application = []
-        for d in os.listdir(self.dir_application):
-            if os.path.isdir(path_join(self.dir_application, d)) and d not in self.target_applications:
-                ignore_list_in_application.append("- ^application/%s/.*$" % d)
-        return ignore_list_in_application
-
-    @staticmethod
-    def get_target_applications(project_config, project_config_file):
-        target_applications = [project_config['project_id'], project_config_file]
-        if 'applications' in project_config and isinstance(project_config['applications'], list):
-            target_applications += project_config['applications']
-        return target_applications
-
-    def get_application_dir(self):
-        application_list = []
-        for d in os.listdir(self.dir_application):
-            if os.path.isdir(path_join(self.dir_application, d)) and d in self.target_applications:
-                application_list.append(path_join(self.dir_application, d))
-        return application_list
-
-    @staticmethod
-    def get_files(path, target_file_name):
-        index_yaml_files = []
-        for root_path, _, files in os.walk(path):
-            if root_path[len(path) + 1:].count(os.sep) < 2:
-                for file_name in files:
-                    if file_name == target_file_name:
-                        index_yaml_files.append(path_join(root_path, file_name))
-        return index_yaml_files
+    config_name = ''
+    config = {}
 
     def __init__(self):
         parser = OptionParser(usage='usage: %prog deploy [options]')
@@ -112,65 +61,52 @@ class Deploy:
                           help='rollback application first (default: False)')
         parser.add_option('-S', '--save', action='store_true', dest='save', default=False,
                           help='rollback application first (default: False)')
-
         (options, args) = parser.parse_args()
 
-        project_config_name = 'default'
-        if len(sys.argv) == 1:
-            project_config_name = raw_input_with_time('Please enter Project Name: ')
-        if len(sys.argv) >= 2:
-            project_config_name = sys.argv[1]
-        
         self.dir_manage = path_join(os.path.dirname(os.path.abspath(__file__)))
         self.dir_root = path_join(self.dir_manage, '..')
         self.dir_application = path_join(self.dir_root, 'application')
         self.dir_plugins = path_join(self.dir_root, 'plugins')
 
-        project_config = {}
-        no_config_file = True
-        try:
-            config_file_in_manage = path_join(self.dir_manage, 'project_%s.json' % project_config_name)
-            with open(config_file_in_manage, 'r+') as f:
-                project_config = json.load(fp=f)
-                no_config_file = False
-        except IOError:
-            pass
-        try:
-            config_file_in_application = path_join(path_join(self.dir_application, project_config_name), 'deploy.json')
-            print config_file_in_application
-            with open(config_file_in_application, 'r+') as f:
-                project_config = json.load(fp=f)
-                no_config_file = False
-        except IOError:
-            pass
-        for n in ['project_id', 'version']:
-            n_val = getattr(options, n)
-            if n_val is None and n in project_config:
-                n_val = project_config[n]
-            project_config.update({
-                n: (n_val is not None) and n_val or raw_input_with_time('Please enter %s: ' % n)
+        config_name = (len(args) >= 1) and args[0] or raw_input_with_time('Please enter Config Name: ')
+        if len(config_name.strip()) == 0:
+            config_name = 'default'
+        # 先找 manage 目錄下的設定
+        config_file_in_manage = path_join(self.dir_manage, 'project_%s.json' % config_name)
+        config, no_config_file = get_config_file_from(config_file_in_manage)
+        # 再找 applications 下的設定
+        if no_config_file:
+            config_file_in_application = path_join(path_join(self.dir_application, config_name), 'deploy.json')
+            config, no_config_file = get_config_file_from(config_file_in_application)
+        self.config, self.config_name = config, config_name
+
+        # 確認要上傳的 project_id 及 版本 ( 命令列 > 設定檔 > 輸入 )
+        for key_name in ['project_id', 'version']:
+            key_value = getattr(options, key_name)
+            if key_value is None and key_name in config:
+                key_value = config[key_name]
+            config.update({
+                key_name: (key_value is not None) and key_value or raw_input_with_time('Please enter %s: ' % key_name)
             })
-        if project_config['version'] == 'auto_today':
-            project_config['version'] = datetime.datetime.today().strftime('%Y%m%d')
+        if config['version'] == 'auto_today':
+            # 自動依今天日期產生版本號、不儲存
+            config['version'] = datetime.datetime.today().strftime('%Y%m%d')
         else:
-            if no_config_file and options.save is False:
-                y = raw_input_with_time('Would you want to save config file (y/N): ')
-                options.save = (y == 'y' or y == 'Y')
-            if options.save:
-                j = json.dumps(project_config, indent=4)
-                with open(config_file_in_manage, 'w') as f:
-                    f.write(j)
-                    print_with_time('config file is save')
-        self.target_applications = self.get_target_applications(project_config, project_config_name)
+            # 確認是否要儲存設定檔 (若設定檔不存在)
+            self.check_and_save_config(no_config_file, options, config_file_in_manage, config)
+
+        self.full_apps, self.target_apps = self.get_applications(config, self.config_name, self.dir_application)
+        self.full_plugins, self.target_plugins = self.get_plugins(config, self.dir_plugins)
 
         # start deploy
-        project_id = project_config['project_id']
-        project_version = project_config['version']
-        ignore = self.process_ignore_list(project_config)
+        project_id = config['project_id']
+        project_version = config['version']
+        ignore = self.process_ignore_list()
+        include = self.process_include_list()
         update_indexes = options.indexes
         update_cron = options.cron
         rollback = options.rollback
-        automatic_scaling = self.process_automatic_scaling_list(project_config)
+        automatic_scaling = self.process_automatic_scaling_list(config)
         if project_id is None or project_id == '':
             print_with_time('need project id')
             return
@@ -187,6 +123,8 @@ class Deploy:
             elif line.find('automatic_scaling') > 0:
                 if automatic_scaling is not None and automatic_scaling != '':
                     temp_file.write(automatic_scaling+'\n')
+            elif line.find('includes:') > 0:
+                temp_file.write(include)
             else:
                 temp_file.write(line)
         temp_file.write(ignore)
@@ -202,6 +140,139 @@ class Deploy:
             self.merge_yaml('cron.yaml', 'cron')
             self.run('appcfg.py update_cron . -A %s -V %s' % (project_id, project_version))
         os.remove(temp_deploy_yaml_file)
+
+    @staticmethod
+    def run(str_command):
+        print_with_time(str_command)
+        os.system(str_command)
+
+    def merge_yaml(self, file_name, first_line):
+        file_need_to_join = []
+        for t in self.target_apps:
+            yaml_file = path_join(path_join(self.dir_application, t), file_name)
+            if os.path.isfile(yaml_file):
+                file_need_to_join.append(yaml_file)
+        for t in self.target_plugins:
+            yaml_file = path_join(path_join(self.dir_plugins, t), file_name)
+            if os.path.isfile(yaml_file):
+                file_need_to_join.append(yaml_file)
+
+        target_file_name = path_join(self.dir_root, file_name)
+        target_file = open(target_file_name, 'w')
+        target_file.write(first_line + ':\n')
+        for fr in file_need_to_join:
+            target_file.write('# %s .\n' % os.path.abspath(fr))
+            for line in open(fr, 'r'):
+                target_file.write(line)
+            target_file.write('\n')
+        target_file.close()
+
+    def process_automatic_scaling_list(self, config):
+        config_automatic_scaling = []
+        if 'automatic_scaling' in config:
+            config_automatic_scaling = config['automatic_scaling']
+            if isinstance(config_automatic_scaling, basestring):
+                config_automatic_scaling = [config_automatic_scaling]
+        if isinstance(config_automatic_scaling, list):
+            return 'automatic_scaling:\n  '+ '\n  '.join(config_automatic_scaling)
+        return ''
+
+    def process_ignore_list(self):
+        config_ignore = []
+        config = self.config
+        full_plugins = self.full_plugins
+        target_plugins = self.target_plugins
+                
+        if 'ignore' in config:
+            config_ignore = config['ignore']
+            if isinstance(config_ignore, basestring):
+                config_ignore = [config_ignore]
+        for p in self.full_apps:
+            if p not in self.target_apps:
+                config_ignore.append("- ^application/%s/.*$" % p)
+        for p in self.full_plugins:
+            if p not in self.target_plugins:
+                config_ignore.append("- ^plugins/%s/.*$" % p)
+        if isinstance(config_ignore, list):
+            config_ignore = list(set(config_ignore))
+            config_ignore.sort()
+            return '\n'.join(config_ignore)
+        return ''
+
+    def process_include_list(self):
+        include_list_in_application = ['includes:']
+        for t in self.target_apps:
+            yaml_file = path_join(path_join(self.dir_application, t), 'include.yaml')
+            if os.path.isfile(yaml_file):
+                include_list_in_application.append("- application/%s/include.yaml" % t)
+        for t in self.target_plugins:
+            yaml_file = path_join(path_join(self.dir_plugins, t), 'include.yaml')
+            if os.path.isfile(yaml_file):
+                include_list_in_application.append("- plugins/%s/include.yaml" % t)
+        return '\n'.join(include_list_in_application)
+
+    def ignore_application_dir(self):
+        ignore_list_in_application = []
+        for d in os.listdir(self.dir_application):
+            if os.path.isdir(path_join(self.dir_application, d)) and d not in self.target_apps:
+                ignore_list_in_application.append("- ^application/%s/.*$" % d)
+        return ignore_list_in_application
+
+    @staticmethod
+    def get_applications(config, config_file, dir_application):
+        """取得 application/[project_id] 及設定檔裡的 applications"""
+        full_apps = []
+        for x in os.listdir(dir_application):
+            if os.path.isdir(os.path.join(dir_application, x)):
+                full_apps.append(x)
+        target_applications = [config['project_id'].replace('-', '_'), config_file]
+        if 'applications' in config and isinstance(config['applications'], list):
+            target_applications += config['applications']
+        return full_apps, list(set(target_applications))
+
+    @staticmethod
+    def get_plugins(config, dir_plugins):
+        """取得 plugins/[*] 的套件 或 設定檔裡的 plugins"""
+        full_plugins = []
+        for x in os.listdir(dir_plugins):
+            if os.path.isdir(os.path.join(dir_plugins, x)):
+                full_plugins.append(x)
+        if 'plugins' in config and isinstance(config['plugins'], list):
+            target_plugins = config['plugins']
+        else:
+            target_plugins = full_plugins
+        return full_plugins, target_plugins
+
+    def get_application_dir(self):
+        application_list = []
+        for d in os.listdir(self.dir_application):
+            if os.path.isdir(path_join(self.dir_application, d)) and d in self.target_apps:
+                application_list.append(path_join(self.dir_application, d))
+        return application_list
+
+    @staticmethod
+    def get_files(path, target_file_name):
+        index_yaml_files = []
+        for root_path, _, files in os.walk(path):
+            if root_path[len(path) + 1:].count(os.sep) < 2:
+                for file_name in files:
+                    if file_name == target_file_name:
+                        index_yaml_files.append(path_join(root_path, file_name))
+        return index_yaml_files
+
+    @staticmethod
+    def check_and_save_config(no_config_file, options, config_file_in_manage, config):
+        """確認是否要儲存設定檔 (若設定檔不存在)"""
+        if no_config_file and options.save is False:
+            y = raw_input_with_time('Would you want to save config file (y/N): ')
+            options.save = (y == 'y' or y == 'Y')
+        if options.save:
+            j = json.dumps(config, indent=4)
+            with open(config_file_in_manage, 'w') as f:
+                f.write(j)
+                print_with_time('config file is save')
+
+
 
 
 if __name__ == '__main__':

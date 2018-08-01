@@ -4,6 +4,12 @@ api_version: 1
 threadsafe: yes
 default_expiration: "10d"
 
+#basic_scaling:
+#  max_instances: 1
+#  idle_timeout: 30m
+
+#automatic_scaling
+
 builtins:
 - appstats: on
 - deferred: on
@@ -136,7 +142,7 @@ handlers:
   script: plugins.code.getcode
   secure: always
 
-- url: /assets/(.+\.(gif|jpg|jpeg|png|ico|icon|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))$
+- url: /assets/(.+\.(gif|jpg|jpeg|png|ico|icon|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss|pdf|zip))$
   script: plugins.file.getfile
   secure: always
 
@@ -144,15 +150,16 @@ handlers:
   script: plugins.code.getcode
   secure: always
 
-- url: /(.+\.(gif|jpg|jpeg|png|ico|icon|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss))$
+- url: /(.+\.(gif|jpg|jpeg|png|ico|icon|woff|woff2|swf|eot|svg|ttf|avi|mpeg|mp4|less|scss|pdf|zip))$
   script: plugins.file.getfile
   secure: always
 
 - url: /.*
   script: argeweb.application.instance
-  secure: always
+#  secure: always
+#  google app engine dev server not support https
+#  you should disable secure: always option
 
-#automatic_scaling
 
 libraries:
 - name: PIL
